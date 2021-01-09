@@ -42,15 +42,15 @@
                 </tr>
                 <tr>
                   <td class="text-left">BNB Balance</td>
-                  <td class="text-right">{{ fromWei(web3.balance) }}</td>
+                  <td class="text-right">{{ fromWei(web3.balance) | round }}</td>
                 </tr>
                 <tr>
                   <td class="text-left">CAKE Balance</td>
-                  <td class="text-right">{{ fromWei(amountInPool) }}</td>
+                  <td class="text-right">{{ fromWei(amountInPool) | round }}</td>
                 </tr>
                 <tr>
                   <td class="text-left">CAKEs to harvest</td>
-                  <td class="text-right">{{ fromWei(pendingHarvest) }}</td>
+                  <td class="text-right">{{ fromWei(pendingHarvest) | round }}</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -66,23 +66,23 @@
               <tbody>
                 <tr>
                   <td class="text-left">APY</td>
-                  <td class="text-right">{{ apy }}%</td>
+                  <td class="text-right">{{ apy | round(4)}}%</td>
                 </tr>
                 <tr>
                   <td class="text-left">BNB/CAKE rate</td>
-                  <td class="text-right">{{ fromWei(BNB_CAKERate) }}</td>
+                  <td class="text-right">{{ fromWei(BNB_CAKERate) | round(4) }}</td>
                 </tr>
                 <tr>
                   <td class="text-left">Est. gas cost (BNB)</td>
-                  <td class="text-right">{{ fromWei(estimatedGasInBNB) }} BNB</td>
+                  <td class="text-right">{{ fromWei(estimatedGasInBNB) | round }} BNB</td>
                 </tr>
                 <tr>
                   <td class="text-left">Est. gas cost (CAKE)</td>
-                  <td class="text-right">{{ fromWei(estimatedGasInCAKE) }} CAKE</td>
+                  <td class="text-right">{{ fromWei(estimatedGasInCAKE) | round(4) }} CAKE</td>
                 </tr>
                 <tr>
                   <td class="text-left">CAKEs to harvest</td>
-                  <td class="text-right">{{ fromWei(pendingHarvest) }}</td>
+                  <td class="text-right">{{ fromWei(pendingHarvest) | round }}</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -102,7 +102,7 @@
                 <img src="~assets/cake.svg" width="64px" alt="pancakes">
               </template>
               <span class="text-weight-bold">
-                You should compound your cakes every <span class="text-green">{{ maxHours.periodLengthInHours }} hours</span> or when you have <span class="text-green"> {{ fromWei(maxHours.cakesByPeriod) }} CAKES</span>.
+                You should compound your cakes every <span class="text-green">{{ maxHours.periodLengthInHours }} hours</span> or when you have <span class="text-green"> {{ fromWei(maxHours.cakesByPeriod) | round }} CAKES</span>.
               </span>
             </q-banner>
           </q-card-section>
@@ -131,14 +131,14 @@
                 </tr>
                 <tr v-for="data in calculatedData" :key="data.periodLengthInHours" :class="{ max: (data.periodLengthInHours == maxHours.periodLengthInHours) }">
                   <td class="text-left">{{ data.periodLengthInHours }}</td>
-                  <td class="text-left">{{ fromWei(data.cakesByPeriod) }}</td>
-                  <td class="text-left">{{ data.periodInterestRate }}</td>
-                  <td class="text-left">{{ data.periodCount }}</td>
-                  <td class="text-left">{{ fromWei(data.investedAmount) }}</td>
-                  <td class="text-left">{{ fromWei(data.networkFeeInCakes) }}</td>
-                  <td class="text-left">{{ data.composedInterestRate }}</td>
-                  <td class="text-left">{{ fromWei(data.totalFeeCostInPeriod) }}</td>
-                  <td class="text-left">{{ fromWei(data.earned) }}</td>
+                  <td class="text-left">{{ fromWei(data.cakesByPeriod) | round }}</td>
+                  <td class="text-left">{{ data.periodInterestRate | round(4) }}</td>
+                  <td class="text-left">{{ data.periodCount  | round(1) }}</td>
+                  <td class="text-left">{{ fromWei(data.investedAmount) | round }}</td>
+                  <td class="text-left">{{ fromWei(data.networkFeeInCakes) | round }}</td>
+                  <td class="text-left">{{ data.composedInterestRate | round(4) }}</td>
+                  <td class="text-left">{{ fromWei(data.totalFeeCostInPeriod) | round(4)}}</td>
+                  <td class="text-left">{{ fromWei(data.earned) | round }}</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -325,6 +325,20 @@ export default {
       await this.doCalcs()
     }
   },
+  filters: {
+    round: function (value, decimals=2) {
+      if(!value) {
+        value = 0;
+      }
+
+      if(!decimals) {
+        decimals = 0;
+      }
+
+      value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+      return value;
+    }
+  }
 }
 
 function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this make shift function
