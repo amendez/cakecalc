@@ -82,6 +82,9 @@ export default {
       leftDrawerOpen: false,
       essentialLinks: linksData
     }
+  },
+  mounted: function () {
+    this.$i18n.locale = this.$q.lang.getLocale()
   }
 }
 </script>
