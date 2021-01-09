@@ -100,7 +100,7 @@ cfg.module.rules.push({
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: ['Loading']
     },
 
     // animations: 'all', // --- includes all animations

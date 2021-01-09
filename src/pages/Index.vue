@@ -198,11 +198,15 @@ export default {
       return number?web3.utils.toWei(strNumber):0
     },
     async connectWallet() {
+      this.$q.loading.show({
+        message: 'Please wait while we <b>count</b> your CAKEs...'
+      })
       await this.$store.dispatch('store/registerWeb3')
       await this.$store.dispatch('store/getContractInstance')
       this.connected = this.web3.isInjected
       this.isBSC = this.web3.networkId == 56
       await this.doCalcs()
+      this.$q.loading.hide()
     },
     async getPoolInfo() {
       const objectResult = await this.poolContract().methods.poolInfo(POOL_INDEX).call({ from: this.userAddress })
