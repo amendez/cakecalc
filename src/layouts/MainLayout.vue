@@ -12,8 +12,11 @@
         />
 
         <q-toolbar-title>
+          <q-avatar>
+            <img src="~assets/cakecalc.png" width="48px" alt="CakeCalc">
+          </q-avatar>
           CakeCalc
-          <q-badge align="top" color="orange">BETA</q-badge>
+          <q-badge align="top" color="orange">0.1 BETA</q-badge>
         </q-toolbar-title>
 
         <q-btn round small color="secondary" icon="lightbulb" @click="$q.dark.toggle()" />
