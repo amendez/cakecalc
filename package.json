@@ -6,6 +6,9 @@
   "author": "Ariel <arielmendez@gmail.com>",
   "private": true,
   "scripts": {
+    "build": "quasar build",
+    "start": "node server.js",
+    "dev": "quasar dev",
     "lint": "eslint --ext .js,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
