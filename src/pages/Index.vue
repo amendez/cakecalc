@@ -11,8 +11,12 @@
           </q-card-section>
 
           <q-card-actions align="around">
-            <q-btn :disabled="connected" @click="connectWallet" flat icon="calculate">Connect wallet</q-btn>
-            <q-btn :disabled="!connected" @click="doCalcs" flat icon="refresh">Refresh data!</q-btn>
+            <q-btn :disabled="connected" @click="connectWallet" flat icon="calculate">
+              {{ $t('connect_wallet') }}
+            </q-btn>
+            <q-btn :disabled="!connected" @click="refreshAll" flat icon="refresh">
+              {{ $t('refresh') }}
+            </q-btn>
           </q-card-actions>
         </q-card>
       </div>
@@ -309,8 +313,18 @@ export default {
       result = await cakeContract.methods.balanceOf(contract.options.address).call({ from: this.userAddress })
       const lpSupply = BN(result)
       this.apy =  annualBlockReward.div(lpSupply).divRound(BN("100000000")).toNumber() / 100
+    },
+    async refreshAll() {
+      this.amountInPool = 0
+      this.poolAllocPoint = 0
+      this.estimatedGasInBNB = 0
+      this.BNB_CAKERate = 0
+      this.pendingHarvest = 0
+      this.apy = 0
+      this.calculatedData = []
+      await this.doCalcs()
     }
-  }
+  },
 }
 
 function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this make shift function
