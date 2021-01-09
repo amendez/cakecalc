@@ -93,15 +93,14 @@
         <q-card>
           <q-card-section class="bg-primary text-white">
             <div class="text-h6">Summary!</div>
-            <q-markup-table>
-              <thead>
-                <tr>
-                  <td class="text-weight-bolder">
-                    You should compound your cakes every <span class="text-green">{{ maxHours.periodLengthInHours }} hours</span> or when you have <span class="text-green"> {{ fromWei(maxHours.cakesByPeriod) }} CAKES</span>.
-                  </td>
-                </tr>
-              </thead>
-            </q-markup-table>
+            <q-banner rounded class="bg-white text-black">
+              <template v-slot:avatar>
+                <img src="~assets/cake.svg" width="64px" alt="pancakes">
+              </template>
+              <span class="text-weight-bold">
+                You should compound your cakes every <span class="text-green">{{ maxHours.periodLengthInHours }} hours</span> or when you have <span class="text-green"> {{ fromWei(maxHours.cakesByPeriod) }} CAKES</span>.
+              </span>
+            </q-banner>
           </q-card-section>
         </q-card>
       </div>
