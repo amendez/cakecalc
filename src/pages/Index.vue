@@ -4,9 +4,9 @@
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
           <q-card-section class="text-white" :class="{'bg-secondary':!connected, 'bg-green':connected}">
-            <div class="text-h6">{{ !connected ? "Connect your wallet": "Wallet connected" }}</div>
+            <div class="text-h6">{{ !connected ? $t("connect_your_wallet"): $("wallet_connected") }}</div>
             <div class="text-subtitle2" v-if="!connected">
-              Please connect your wallet, so we can make the calcs for you!
+              {{ $t('please_connect') }}
             </div>
           </q-card-section>
 

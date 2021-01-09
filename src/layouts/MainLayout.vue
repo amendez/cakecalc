@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          <q-avatar>
+          <q-avatar square>
             <img src="~assets/cakecalc.png" width="48px" alt="CakeCalc">
           </q-avatar>
           CakeCalc

@@ -1,7 +1,5 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
-  failed: 'Action failed',
-  success: 'Action was successful'
+  connect_your_wallet: 'Connect your wallet',
+  wallet_connected:'Wallet connected',
+  please_connect: 'Please connect your wallet, so we can make the calcs for you!',
 }
