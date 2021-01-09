@@ -3,7 +3,7 @@
     <div class="row q-gutter-sm" :class="{'alone':!connected}" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
-          <q-card-section class="bg-secondary text-white">
+          <q-card-section class="text-white" :class="{'bg-secondary':!connected, 'bg-green':connected}">
             <div class="text-h6">{{ !connected ? "Connect your wallet": "Wallet connected" }}</div>
             <div class="text-subtitle2" v-if="!connected">
               Please connect your wallet, so we can make the calcs for you!
@@ -92,7 +92,27 @@
         <br>
         <q-card>
           <q-card-section class="bg-primary text-white">
-            <div class="text-h6">Results!</div>
+            <div class="text-h6">Summary!</div>
+            <q-markup-table>
+              <thead>
+                <tr>
+                  <td class="text-weight-bolder">
+                    You should compound your cakes every <span class="text-green">{{ maxHours.periodLengthInHours }} hours</span> or when you have <span class="text-green"> {{ fromWei(maxHours.cakesByPeriod) }} CAKES</span>.
+                  </td>
+                </tr>
+              </thead>
+            </q-markup-table>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
+    <div class="row" v-if="connected && isBSC && calculatedData.length">
+      <div class="col-12">
+        <br>
+        <q-card>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">Detailed results!</div>
             <q-markup-table class="results">
               <tbody>
                 <tr class="header">
@@ -106,7 +126,7 @@
                   <td>totalFeeCostInPeriod</td>
                   <td>earned</td>
                 </tr>
-                <tr v-for="data in calculatedData" :key="data.periodLengthInHours" :class="{ max: (data.periodLengthInHours == maxHours) }">
+                <tr v-for="data in calculatedData" :key="data.periodLengthInHours" :class="{ max: (data.periodLengthInHours == maxHours.periodLengthInHours) }">
                   <td class="text-left">{{ data.periodLengthInHours }}</td>
                   <td class="text-left">{{ fromWei(data.cakesByPeriod) }}</td>
                   <td class="text-left">{{ data.periodInterestRate }}</td>
@@ -166,7 +186,7 @@ export default {
     maxHours() {
       let max = {earned: 0}
       this.calculatedData.forEach(data => max = (data.earned > max.earned)?data:max)
-      return max.periodLengthInHours
+      return max
     }
   },
   methods: {
@@ -205,9 +225,12 @@ export default {
       this.BNB_CAKERate = rate[0]
     },
     async doCalcs() {
-      for (let index = 0; index <= 48; index+=2) {
-        if (!index) continue
-        await this.doCalc(index)
+      const hours = [
+        1,2,3,4,5,6,12,18,24,30,36,42,48,56,72,84,96,
+        (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30]
+
+      for (const hour of hours) {
+        await this.doCalc(hour)
       }
     },
     async doCalc(hours = 1) {
