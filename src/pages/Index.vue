@@ -11,8 +11,8 @@
           </q-card-section>
 
           <q-card-actions align="around">
-            <q-btn :disabled="connected" @click="connectWallet" flat>Connect wallet</q-btn>
-            <q-btn :disabled="!connected" @click="doCalcs" flat>Refresh data!</q-btn>
+            <q-btn :disabled="connected" @click="connectWallet" flat icon="calculate">Connect wallet</q-btn>
+            <q-btn :disabled="!connected" @click="doCalcs" flat icon="refresh">Refresh data!</q-btn>
           </q-card-actions>
         </q-card>
       </div>

@@ -65,6 +65,12 @@ const linksData = [
     icon: 'message',
     link: 'https://t.me/PancakeSwapES'
   },
+  {
+    title: 'Spreadsheet calculator',
+    caption: 'By Leodem',
+    icon: 'calculate',
+    link: 'https://linktr.ee/pancakeswap'
+  },
   
 ];
 

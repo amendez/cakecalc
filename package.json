@@ -2,7 +2,7 @@
   "name": "cakecalc",
   "version": "0.0.1",
   "description": "A cake compound apy calculator, to decide when is better to compund your cakes",
-  "productName": "cakecalc",
+  "productName": "CakeCalc",
   "author": "Ariel <arielmendez@gmail.com>",
   "private": true,
   "scripts": {
