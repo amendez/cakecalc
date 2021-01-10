@@ -1,5 +1,5 @@
 export default ({ Vue }) => {
-  Vue.filter('round', function (value, decimals=2) {
+  Vue.filter('round', function (value, decimals=3) {
     if(!value) {
       value = 0;
     }
