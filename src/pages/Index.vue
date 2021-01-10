@@ -232,7 +232,11 @@ export default {
       this.pendingHarvest = result
     },
     async estimateGas() {
-      const gas = await this.poolContract().methods.enterStaking(1).estimateGas({from: this.userAddress})
+      if (!this.pendingHarvest) {
+        await this.getPendingCake()
+      }
+      
+      const gas = await this.poolContract().methods.enterStaking(this.pendingHarvest || 1).estimateGas({from: this.userAddress})
       this.estimatedGasInBNB = this.toWei(gas * GAS_COST * 0.000000001)
     },
     async getConversionRate() {
@@ -255,12 +259,12 @@ export default {
       if (!this.amountInPool) {
         await this.getUserInfo()
       }
+      if (!this.pendingHarvest) {
+        await this.getPendingCake()
+      }
       if (!this.estimatedGasInCAKE) {
         await this.estimateGas()
         await this.getConversionRate()
-      }
-      if (!this.pendingHarvest) {
-        this.getPendingCake()
       }
 
       const periodInterestRate = ((this.apy / 365 / 24) * hours) / 100 + 1
