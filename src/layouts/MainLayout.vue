@@ -40,7 +40,7 @@
           Menu
         </q-item-label>
         <EssentialLink
-          v-for="link in essentialLinks"
+          v-for="link in links"
           :key="link.title"
           v-bind="link"
         />
@@ -62,31 +62,31 @@ export default {
   data () {
     return {
       leftDrawerOpen: false,
-      essentialLinks: [
-        {
-          title: this.$t('pancakeswap'),
-          caption: this.$t('pancakeswap_link_caption'),
-          icon: 'home',
-          link: 'https://pancakeswap.finance/'
-        },
-        {
-          title: this.$t('telegram_es_link'),
-          caption: this.$t('telegram_es_caption'),
-          icon: 'message',
-          link: 'https://t.me/PancakeSwapES'
-        },
-        {
-          title: this.$t('spreadsheet_calculator_link'),
-          caption: this.$t('spreadsheet_calculator_caption'),
-          icon: 'calculate',
-          link: 'https://linktr.ee/pancakeswap'
-        },
-        
-      ]
+      links: []
     }
   },
   mounted: function () {
     this.$i18n.locale = this.$q.lang.getLocale()
+    this.links = [
+      {
+        title: this.$t('pancakeswap'),
+        caption: this.$t('pancakeswap_link_caption'),
+        icon: 'home',
+        link: 'https://pancakeswap.finance/'
+      },
+      {
+        title: this.$t('telegram_es_link'),
+        caption: this.$t('telegram_es_caption'),
+        icon: 'message',
+        link: 'https://t.me/PancakeSwapES'
+      },
+      {
+        title: this.$t('spreadsheet_calculator_link'),
+        caption: this.$t('spreadsheet_calculator_caption'),
+        icon: 'calculate',
+        link: 'https://linktr.ee/pancakeswap'
+      },
+    ]
   }
 }
 </script>

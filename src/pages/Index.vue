@@ -213,12 +213,11 @@ export default {
         this.connected = this.web3.isInjected
         this.isBSC = this.web3.networkId == 56
         await this.doCalcs()
+        this.stopLoading()
       }
       catch (error) {
-        this.stopLoading()
-        return this.connectWallet()
+        setTimeout(this.connectWallet, 2000)
       }
-      this.stopLoading()
     },
     async getPoolInfo() {
       const objectResult = await this.poolContract().methods.poolInfo(POOL_INDEX).call({ from: this.userAddress })
