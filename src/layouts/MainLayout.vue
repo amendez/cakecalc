@@ -16,7 +16,7 @@
             <img src="~assets/cakecalc.png" width="48px" alt="CakeCalc">
           </q-avatar>
           CakeCalc
-          <q-badge align="top" color="orange">0.2 BETA</q-badge>
+          <q-badge align="top" color="orange">0.3 BETA</q-badge>
         </q-toolbar-title>
 
         <q-btn
@@ -56,35 +56,33 @@
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 
-const linksData = [
-  {
-    title: 'PancakeSwap',
-    caption: 'PancakeSwap official website',
-    icon: 'home',
-    link: 'https://pancakeswap.finance/'
-  },
-  {
-    title: 'Telegram español',
-    caption: 'PancakeSwap official Telegram community',
-    icon: 'message',
-    link: 'https://t.me/PancakeSwapES'
-  },
-  {
-    title: 'Spreadsheet calculator',
-    caption: 'By Leodem',
-    icon: 'calculate',
-    link: 'https://linktr.ee/pancakeswap'
-  },
-  
-];
-
 export default {
   name: 'MainLayout',
   components: { EssentialLink },
   data () {
     return {
       leftDrawerOpen: false,
-      essentialLinks: linksData
+      essentialLinks: [
+        {
+          title: this.$t('pancakeswap'),
+          caption: this.$t('pancakeswap_link_caption'),
+          icon: 'home',
+          link: 'https://pancakeswap.finance/'
+        },
+        {
+          title: this.$t('telegram_es_link'),
+          caption: this.$t('telegram_es_caption'),
+          icon: 'message',
+          link: 'https://t.me/PancakeSwapES'
+        },
+        {
+          title: this.$t('spreadsheet_calculator_link'),
+          caption: this.$t('spreadsheet_calculator_caption'),
+          icon: 'calculate',
+          link: 'https://linktr.ee/pancakeswap'
+        },
+        
+      ]
     }
   },
   mounted: function () {
@@ -95,6 +93,6 @@ export default {
 
 <style>
   .q-page {
-    padding: 20px;
+    padding: 10px;
   }
 </style>

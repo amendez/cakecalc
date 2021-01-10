@@ -207,11 +207,17 @@ export default {
     },
     async connectWallet() {
       this.startLoading()
-      await this.$store.dispatch('store/registerWeb3')
-      await this.$store.dispatch('store/getContractInstance')
-      this.connected = this.web3.isInjected
-      this.isBSC = this.web3.networkId == 56
-      await this.doCalcs()
+      try {
+        await this.$store.dispatch('store/registerWeb3')
+        await this.$store.dispatch('store/getContractInstance')
+        this.connected = this.web3.isInjected
+        this.isBSC = this.web3.networkId == 56
+        await this.doCalcs()
+      }
+      catch (error) {
+        this.stopLoading()
+        return this.connectWallet()
+      }
       this.stopLoading()
     },
     async getPoolInfo() {

@@ -3,9 +3,9 @@ import getContract from '../../utils/getContract'
 
 export function registerWeb3 ({commit}) {
     console.debug('registerWeb3 Action being executed')
-    getWeb3.then(result => {
+    return getWeb3().then(result => {
         console.debug('committing result to registerWeb3Instance mutation')
-        commit('registerWeb3Instance', result)
+        return commit('registerWeb3Instance', result)
     }).catch(e => {
         console.debug('error in action registerWeb3', e)
     })
@@ -14,18 +14,20 @@ export function registerWeb3 ({commit}) {
 export function getContractInstance ({commit}) {
     console.debug("getContractInstance", getContract)
     
-    getContract.getPoolContract.then(result => {
+    const poolPromise = getContract.getPoolContract().then(result => {
         console.debug("pool contractInstance", result)
-        commit('registerPoolContractInstance', result)
+        return commit('registerPoolContractInstance', result)
     }).catch(e => console.debug(e))
     
-    getContract.getCakeContract.then(result => {
+    const cakePromise = getContract.getCakeContract().then(result => {
         console.debug("cake contractInstance", result)
-        commit('registerCakeContractInstance', result)
+        return commit('registerCakeContractInstance', result)
     }).catch(e => console.debug(e))
 
-    getContract.getSwapContract.then(result => {
+    const swapPromise = getContract.getSwapContract().then(result => {
         console.debug("seap contractInstance", result)
-        commit('registerSwapContractInstance', result)
+        return commit('registerSwapContractInstance', result)
     }).catch(e => console.debug(e))
+
+    return Promise.all([poolPromise, cakePromise, swapPromise])
 }

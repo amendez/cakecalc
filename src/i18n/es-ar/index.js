@@ -31,4 +31,10 @@ export default {
   days: 'días',
   hours: 'horas',
   loading_message: 'Por favor, espera mientras <b>contamos</b> tus CAKEs...',
+  pancakeswap: 'PancakeSwap',
+  pancakeswap_link_caption: 'PancakeSwap web oficial',
+  telegram_es_link: 'Telegram Español',
+  telegram_es_caption: 'Comunidad oficial en español.',
+  spreadsheet_calculator_link: 'Calculadora en Spreadsheet',
+  spreadsheet_calculator_caption: 'Por Leodem',
 }

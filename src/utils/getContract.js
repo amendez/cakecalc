@@ -3,7 +3,7 @@ import pool from './constants/poolContract'
 import cake from './constants/cakeContract'
 import swap from './constants/swapContract'
 
-let getPoolContract = new Promise(function (resolve, reject) {
+let getPoolContract = () => new Promise(function (resolve, reject) {
   if(typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'){
     //getting Permission to access. This is for when the user has new MetaMask
     window.ethereum.enable()
@@ -21,7 +21,7 @@ let getPoolContract = new Promise(function (resolve, reject) {
   resolve(contract)
 })
 
-let getCakeContract = new Promise(function (resolve, reject) {
+let getCakeContract = () => new Promise(function (resolve, reject) {
   if(typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'){
     //getting Permission to access. This is for when the user has new MetaMask
     window.ethereum.enable()
@@ -39,7 +39,7 @@ let getCakeContract = new Promise(function (resolve, reject) {
   resolve(contract)
 })
 
-let getSwapContract = new Promise(function (resolve, reject) {
+let getSwapContract = () => new Promise(function (resolve, reject) {
   if(typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'){
     //getting Permission to access. This is for when the user has new MetaMask
     window.ethereum.enable()

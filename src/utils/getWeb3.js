@@ -8,7 +8,7 @@ import Web3 from 'web3'
 * 5. Get user balance
 */
 
-let getWeb3 = new Promise(function (resolve, reject) {
+let getWeb3 = () => new Promise(function (resolve, reject) {
   // Check for injected web3 (mist/metamask)
   if(typeof window !== 'undefined' && typeof window.ethereum !== 'undefined'){
     //getting Permission to access. This is for when the user has new MetaMask

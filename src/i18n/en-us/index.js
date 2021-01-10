@@ -30,5 +30,11 @@ export default {
   periods_a_month: 'Periods in 1 month',
   days: 'days',
   hours: 'hours',
-  loading_message: 'Please wait while we <b>count</b> your CAKEs...'
+  loading_message: 'Please wait while we <b>count</b> your CAKEs...',
+  pancakeswap: 'PancakeSwap',
+  pancakeswap_link_caption: 'PancakeSwap official website',
+  telegram_es_link: 'Telegram Spanish',
+  telegram_es_caption: 'Official Telegram community',
+  spreadsheet_calculator_link: 'Spreadsheet calculator',
+  spreadsheet_calculator_caption: 'By Leodem',
 }
