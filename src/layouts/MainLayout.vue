@@ -16,11 +16,15 @@
             <img src="~assets/cakecalc.png" width="48px" alt="CakeCalc">
           </q-avatar>
           CakeCalc
-          <q-badge align="top" color="orange">0.1 BETA</q-badge>
+          <q-badge align="top" color="orange">0.2 BETA</q-badge>
         </q-toolbar-title>
 
-        <q-btn round small color="secondary" icon="lightbulb" @click="$q.dark.toggle()" />
-
+        <q-btn
+          round size="xs" icon="lightbulb"
+          :class="{'text-black':$q.dark.isActive, 'text-white':!$q.dark.isActive}"
+          :color="$q.dark.isActive?'white':'black'"
+          @click="$q.dark.toggle()"
+        />
       </q-toolbar>
     </q-header>
 

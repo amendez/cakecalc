@@ -3,6 +3,9 @@
     <div class="row q-gutter-sm" :class="{'alone':!connected}" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
+          
+          <div v-if="connected && isBSC" class="swapsies"></div>
+          
           <q-card-section class="text-white" :class="{'bg-secondary':!connected, 'bg-green':connected}">
             <div class="text-h6">{{ !connected ? $t("connect_your_wallet"): $t("wallet_connected") }}</div>
             <div class="text-subtitle2" v-if="!connected">
@@ -24,8 +27,8 @@
       <div v-if="connected && !isBSC" class="col-12 col-md">
         <q-card>
           <q-card-section class="bg-warning text-white">
-            <div class="text-h6">Error</div>
-            <div class="text-subtitle2">Please use BSC (Binance Smart Chain) network)</div>
+            <div class="text-h6">{{ $t('error') }}</div>
+            <div class="text-subtitle2">{{ $t('wrong_blockchain_error') }}</div>
           </q-card-section>
         </q-card>
       </div>
@@ -33,23 +36,23 @@
       <div v-if="connected && isBSC" class="col-12 col-md">
         <q-card>
           <q-card-section class="bg-accent text-white">
-            <div class="text-h6">Wallet info</div>
+            <div class="text-h6">{{ $t('wallet_info') }}</div>
             <q-markup-table>
               <tbody>
                 <tr>
-                  <td class="text-left">Address</td>
+                  <td class="text-left">{{ $t('address') }}</td>
                   <td class="text-right">{{ userAddress.substring(0,8) }}.....{{ userAddress.substring(34) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left">BNB Balance</td>
+                  <td class="text-left">{{ $t('bnb_balance') }}</td>
                   <td class="text-right">{{ fromWei(web3.balance) | round }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left">CAKE Balance</td>
+                  <td class="text-left">{{ $t('cake_balance') }}</td>
                   <td class="text-right">{{ fromWei(amountInPool) | round }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left">CAKEs to harvest</td>
+                  <td class="text-left">{{ $t('cakes_to_harvest') }}</td>
                   <td class="text-right">{{ fromWei(pendingHarvest) | round }}</td>
                 </tr>
               </tbody>
@@ -61,28 +64,24 @@
       <div v-if="connected && isBSC" class="col-12 col-md">
         <q-card>
           <q-card-section class="bg-warning text-white">
-            <div class="text-h6">Pool info</div>
+            <div class="text-h6">{{ $t('pool_info') }}</div>
             <q-markup-table>
               <tbody>
                 <tr>
-                  <td class="text-left">APY</td>
+                  <td class="text-left">{{ $t('apy') }}</td>
                   <td class="text-right">{{ apy | round(4)}}%</td>
                 </tr>
                 <tr>
-                  <td class="text-left">BNB/CAKE rate</td>
+                  <td class="text-left">{{ $t('bnb_cake_rate') }}</td>
                   <td class="text-right">{{ fromWei(BNB_CAKERate) | round(4) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left">Est. gas cost (BNB)</td>
-                  <td class="text-right">{{ fromWei(estimatedGasInBNB) | round }} BNB</td>
+                  <td class="text-left">{{ $t('bnb_gas_cost') }}</td>
+                  <td class="text-right">{{ fromWei(estimatedGasInBNB) | round(4) }} BNB</td>
                 </tr>
                 <tr>
-                  <td class="text-left">Est. gas cost (CAKE)</td>
+                  <td class="text-left">{{ $t('cake_gas_cost') }}</td>
                   <td class="text-right">{{ fromWei(estimatedGasInCAKE) | round(4) }} CAKE</td>
-                </tr>
-                <tr>
-                  <td class="text-left">CAKEs to harvest</td>
-                  <td class="text-right">{{ fromWei(pendingHarvest) | round }}</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -96,13 +95,21 @@
         <br>
         <q-card>
           <q-card-section class="bg-primary text-white">
-            <div class="text-h6">Summary!</div>
+            <div class="text-h6">{{ $t('summary') }}!</div>
             <q-banner rounded class="bg-white text-black">
               <template v-slot:avatar>
                 <img src="~assets/cake.svg" width="64px" alt="pancakes">
               </template>
               <span class="text-weight-bold">
-                You should compound your cakes every <span class="text-green">{{ maxHours.periodLengthInHours }} hours</span> or when you have <span class="text-green"> {{ fromWei(maxHours.cakesByPeriod) | round }} CAKES</span>.
+                {{ $t('you_should_compund') }}
+                <span class="text-green">
+                  {{ maxHours.periodLengthInHours | period }} 
+                  {{ (maxHours.periodLengthInHours >= 24)?$t('days'):$t('hours') }}
+                </span>
+                {{ $t('or_when_you_have') }}
+                <span class="text-green"> 
+                  {{ fromWei(maxHours.cakesByPeriod) | round }} CAKES
+                </span>.
               </span>
             </q-banner>
           </q-card-section>
@@ -115,30 +122,28 @@
         <br>
         <q-card>
           <q-card-section class="bg-secondary text-white">
-            <div class="text-h6">Detailed results!</div>
+            <div class="text-h6">{{ $t('detailed_results') }}</div>
             <q-markup-table class="results">
               <tbody>
                 <tr class="header">
-                  <td>hours</td>
-                  <td>cakesByPeriod</td>
-                  <td>periodInterestRate</td>
-                  <td>periodCount</td>
-                  <td>investedAmount</td>
-                  <td>networkFeeInCakes</td>
-                  <td>composedInterestRate</td>
-                  <td>totalFeeCostInPeriod</td>
-                  <td>earned</td>
+                  <td>{{ $t('period') }}</td>
+                  <td>{{ $t('periods_a_month') }}</td>
+                  <td>{{ $t('network_fee_in_cakes') }}</td>
+                  <td>{{ $t('total_fee_cost_in_period') }}</td>
+                  <td>{{ $t('period_interest_rate') }}</td>
+                  <td>{{ $t('composed_interest_rate') }}</td>
+                  <td>{{ $t('cakes_by_period') }}</td>
+                  <td>{{ $t('earned') }}</td>
                 </tr>
                 <tr v-for="data in calculatedData" :key="data.periodLengthInHours" :class="{ max: (data.periodLengthInHours == maxHours.periodLengthInHours) }">
-                  <td class="text-left">{{ data.periodLengthInHours }}</td>
-                  <td class="text-left">{{ fromWei(data.cakesByPeriod) | round }}</td>
+                  <td class="text-left">{{ data.periodLengthInHours | period | round }} {{ (data.periodLengthInHours >= 24)?$t('days'):$t('hours') }} </td>
+                  <td class="text-left">{{ data.periodCount | round(1) }}</td>
+                  <td class="text-left">{{ fromWei(data.networkFeeInCakes) | round }} CAKE</td>
+                  <td class="text-left">{{ fromWei(data.totalFeeCostInPeriod) | round(4)}} CAKE</td>
                   <td class="text-left">{{ data.periodInterestRate | round(4) }}</td>
-                  <td class="text-left">{{ data.periodCount  | round(1) }}</td>
-                  <td class="text-left">{{ fromWei(data.investedAmount) | round }}</td>
-                  <td class="text-left">{{ fromWei(data.networkFeeInCakes) | round }}</td>
                   <td class="text-left">{{ data.composedInterestRate | round(4) }}</td>
-                  <td class="text-left">{{ fromWei(data.totalFeeCostInPeriod) | round(4)}}</td>
-                  <td class="text-left">{{ fromWei(data.earned) | round }}</td>
+                  <td class="text-left">{{ fromWei(data.cakesByPeriod) | round }} CAKE</td>
+                  <td class="text-left">{{ fromWei(data.earned) | round }} CAKE</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -201,15 +206,13 @@ export default {
       return number?web3.utils.toWei(strNumber):0
     },
     async connectWallet() {
-      this.$q.loading.show({
-        message: 'Please wait while we <b>count</b> your CAKEs...'
-      })
+      this.startLoading()
       await this.$store.dispatch('store/registerWeb3')
       await this.$store.dispatch('store/getContractInstance')
       this.connected = this.web3.isInjected
       this.isBSC = this.web3.networkId == 56
       await this.doCalcs()
-      this.$q.loading.hide()
+      this.stopLoading()
     },
     async getPoolInfo() {
       const objectResult = await this.poolContract().methods.poolInfo(POOL_INDEX).call({ from: this.userAddress })
@@ -315,6 +318,7 @@ export default {
       this.apy =  annualBlockReward.div(lpSupply).divRound(BN("100000000")).toNumber() / 100
     },
     async refreshAll() {
+      this.startLoading()
       this.amountInPool = 0
       this.poolAllocPoint = 0
       this.estimatedGasInBNB = 0
@@ -323,21 +327,16 @@ export default {
       this.apy = 0
       this.calculatedData = []
       await this.doCalcs()
-    }
-  },
-  filters: {
-    round: function (value, decimals=2) {
-      if(!value) {
-        value = 0;
-      }
-
-      if(!decimals) {
-        decimals = 0;
-      }
-
-      value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
-      return value;
-    }
+      this.stopLoading()
+    },
+    startLoading() {
+      this.$q.loading.show({
+        message: this.$t('loading_message')
+      })
+    },
+    stopLoading() {
+      this.$q.loading.hide()
+    },
   }
 }
 
@@ -358,7 +357,6 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
   }
   .results .header td {
     font-weight: bold;
-    text-transform: capitalize;
   }
   .results td {
     max-width: 100px;
@@ -374,5 +372,12 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
   }
   .row.alone {
     width: inherit;
+  }
+  .swapsies {
+    height:140px;
+    background-image: url("~assets/swapsies.png");
+    background-size: cover;
+    background-position-x: center;
+    background-position-y: top;
   }
 </style>
