@@ -96,7 +96,7 @@
         <q-card>
           <q-card-section class="bg-primary text-white">
             <div class="text-h6">{{ $t('summary') }}!</div>
-            <q-banner rounded class="bg-white text-black">
+            <q-banner rounded class="bg-white text-black shadow-5">
               <template v-slot:avatar>
                 <img src="~assets/cake.svg" width="64px" alt="pancakes">
               </template>
