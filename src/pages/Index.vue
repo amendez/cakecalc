@@ -3,9 +3,7 @@
     <div class="row q-gutter-sm" :class="{'alone':!connected}" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
-          
           <div v-if="connected && isBSC" class="swapsies"></div>
-          
           <q-card-section class="text-white" :class="{'bg-secondary':!connected, 'bg-green':connected}">
             <div class="text-h6">{{ !connected ? $t("connect_your_wallet"): $t("wallet_connected") }}</div>
             <div class="text-subtitle2" v-if="!connected">
@@ -117,6 +115,21 @@
       </div>
     </div>
 
+    <div class="row" v-if="connected && isBSC && calculatedData.length == hours.length">
+      <br>
+      <div class="col-12">
+        <br>
+        <q-card>
+          <q-card-section class="bg-warning text-white">
+            <div class="text-h6">{{ $t('line_graph') }}</div>
+            <div class="graph-container shadow-5">
+              <chart :chart-data="chartData" :options="chartOptions"/>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
     <div class="row" v-if="connected && isBSC && calculatedData.length">
       <div class="col-12">
         <br>
@@ -136,7 +149,7 @@
                   <td>{{ $t('earned') }}</td>
                 </tr>
                 <tr v-for="data in calculatedData" :key="data.periodLengthInHours" :class="{ max: (data.periodLengthInHours == maxHours.periodLengthInHours) }">
-                  <td class="text-left">{{ data.periodLengthInHours | period | round }} {{ (data.periodLengthInHours >= 24)?$t('days'):$t('hours') }} </td>
+                  <td class="text-left">{{ buildPeriodName(data.periodLengthInHours) }} </td>
                   <td class="text-left">{{ data.periodCount | round(1) }}</td>
                   <td class="text-left">{{ fromWei(data.networkFeeInCakes) | round }} CAKE</td>
                   <td class="text-left">{{ fromWei(data.totalFeeCostInPeriod) | round(4)}} CAKE</td>
@@ -151,12 +164,16 @@
         </q-card>
       </div>
     </div>
+
+    
   </q-page>
 </template>
 
 <script>
 import Web3 from 'web3'
 import { mapGetters } from 'vuex'
+import Chart from '../components/Chart'
+import { colors } from 'quasar'
 
 const BNObject = Web3.utils.BN;
 const POOL_INDEX = 0
@@ -165,6 +182,7 @@ const BN = (x) => new BNObject(x)
 
 export default {
   name: 'cakeculator',
+  components: { Chart },
   data: function () {
     return {
       connected: false,
@@ -176,6 +194,10 @@ export default {
       pendingHarvest: 0,
       apy: 0,
       calculatedData: [],
+      hours: [
+        1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
+        (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
+      ]
     }
   },
   computed: {
@@ -195,9 +217,65 @@ export default {
       let max = {earned: 0}
       this.calculatedData.forEach(data => max = (data.earned > max.earned)?data:max)
       return max
+    },
+    chartOptions(){
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: false
+        },
+        title: {
+          display: true,
+          text: this.$t('graph_title')
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: this.$t('graph_x_label')
+            }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: this.$t('graph_y_label')
+            }
+          }]
+        }
+      }
+    },
+    chartData() {
+      return {
+        labels: this.calculatedData.map(elem => this.buildPeriodName(elem.periodLengthInHours)),
+        datasets: [
+          {
+            data: this.calculatedData.map(elem => this.$options.filters.round(this.fromWei(elem.earned), 2)),
+            label: this.$t('graph_dataset_1_label'),
+            borderColor: colors.getBrand('primary'),
+            fill: true,
+            lineTension: 0.1,
+          },
+          {
+            label: this.$t('graph_dataset_2_label'),
+            backgroundColor: colors.getBrand('primary'),
+            data: this.calculatedData.map(elem => elem.periodLengthInHours == this.maxHours.periodLengthInHours?this.fromWei(elem.earned):null ),
+            pointRadius: 10,
+            pointHoverRadius: 15,
+            showLine: false
+          }
+        ]
+      }
     }
   },
   methods: {
+    buildPeriodName(number) {
+      const formatedNumber = this.$options.filters.round(this.$options.filters.period(number), 2)
+      const unit  = (number >= 24)?this.$t('days'):this.$t('hours')
+      return `${formatedNumber} ${unit}`
+    },
     fromWei(number) {
       return number?web3.utils.fromWei(toPlainString(number)):0
     },
@@ -244,11 +322,7 @@ export default {
       this.BNB_CAKERate = rate[0]
     },
     async doCalcs() {
-      const hours = [
-        1,2,3,4,5,6,12,18,24,30,36,42,48,56,72,84,96,
-        (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30]
-
-      for (const hour of hours) {
+      for (const hour of this.hours) {
         await this.doCalc(hour)
       }
     },
@@ -388,5 +462,15 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
     background-size: cover;
     background-position-x: center;
     background-position-y: top;
+  }
+  .body--dark .graph-container {
+    background-color: #333;
+  }
+  .graph-container {
+    background-color: white;
+    border-radius: 4px;
+    height: 400px;
+    position: relative;
+    vertical-align: middle;
   }
 </style>

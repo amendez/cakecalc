@@ -37,4 +37,11 @@ export default {
   telegram_es_caption: 'Official Telegram community',
   spreadsheet_calculator_link: 'Spreadsheet calculator',
   spreadsheet_calculator_caption: 'By Leodem',
+  line_graph: 'Line graph',
+  graph_title: 'Earned cakes after 1 month',
+  graph_x_label: 'Compund every',
+  graph_y_label: 'CAKE',
+  graph_dataset_1_label: 'Cakes in a month',
+  graph_dataset_2_label: 'Highest income',
+
 }

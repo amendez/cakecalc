@@ -37,4 +37,10 @@ export default {
   telegram_es_caption: 'Comunidad oficial en español.',
   spreadsheet_calculator_link: 'Calculadora en Spreadsheet',
   spreadsheet_calculator_caption: 'Por Leodem',
+  line_graph: 'Gráfico de línea',
+  graph_title: 'Cakes ganadas en 1 mes',
+  graph_x_label: 'Componer cada',
+  graph_y_label: 'CAKE',
+  graph_dataset_1_label: 'Cakes ganados en un mes',
+  graph_dataset_2_label: 'Ganancia máxima'
 }
