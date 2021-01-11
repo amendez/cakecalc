@@ -115,7 +115,7 @@
       </div>
     </div>
 
-    <div class="row" v-if="connected && isBSC && calculatedData.length == hours.length">
+    <div class="row" v-if="connected && isBSC">
       <br>
       <div class="col-12">
         <br>
@@ -325,6 +325,11 @@ export default {
       for (const hour of this.hours) {
         await this.doCalc(hour)
       }
+      while (this.calculatedData.length < 5) {
+        const newHour = this.hours[this.hours.length-1] + (24 * 30)
+        this.hours.push(newHour)
+        await this.doCalc(newHour)
+      }
     },
     async doCalc(hours = 1) {
       if (!this.apy) {
@@ -362,6 +367,10 @@ export default {
       console.debug("composedInterestRate: " + composedInterestRate)
       console.debug("totalFeeCost: " + this.fromWei(totalFeeCost) + ' CAKES')
       console.debug("EARNED CAKES AFTER 1 MONTH: " + this.fromWei(result) + ' CAKES')
+      
+      if (result < 0) {
+        return 0
+      }
       
       this.calculatedData.push({
         periodLengthInHours: hours,

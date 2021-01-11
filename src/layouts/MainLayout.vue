@@ -16,7 +16,7 @@
             <img src="~assets/cakecalc.png" width="48px" alt="CakeCalc">
           </q-avatar>
           CakeCalc
-          <q-badge align="top" color="orange">0.3 BETA</q-badge>
+          <q-badge align="top" color="orange">0.4 BETA</q-badge>
         </q-toolbar-title>
 
         <q-btn
