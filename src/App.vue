@@ -5,6 +5,10 @@
 </template>
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  mounted: function () {
+    this.$i18n.locale = this.$q.lang.getLocale()
+    this.$q.dark.set(this.$q.localStorage.getItem('use-dark-mode'))
+  }
 }
 </script>

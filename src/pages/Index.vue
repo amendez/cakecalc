@@ -94,7 +94,7 @@
         <q-card>
           <q-card-section class="bg-primary text-white">
             <div class="text-h6">{{ $t('summary') }}!</div>
-            <q-banner rounded class="bg-white text-black shadow-5">
+            <q-banner rounded class="shadow-5" :class="briefClass">
               <template v-slot:avatar>
                 <img src="~assets/cake.svg" width="64px" alt="pancakes">
               </template>
@@ -218,6 +218,13 @@ export default {
       this.calculatedData.forEach(data => max = (data.earned > max.earned)?data:max)
       return max
     },
+    briefClass() {
+      let classes = ['bg-white', 'text-black']
+      if (this.$q.dark.isActive) {
+        classes = ['q-dark']
+      }
+      return classes
+    },
     chartOptions(){
       return {
         responsive: true,
@@ -268,6 +275,12 @@ export default {
           }
         ]
       }
+    }
+  },
+  async mounted () {
+    const connected = this.$q.localStorage.getItem('account-connected')
+    if (connected === 'true') {
+      await this.connectWallet()
     }
   },
   methods: {

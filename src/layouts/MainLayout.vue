@@ -23,7 +23,7 @@
           round size="xs" icon="lightbulb"
           :class="{'text-black':$q.dark.isActive, 'text-white':!$q.dark.isActive}"
           :color="$q.dark.isActive?'white':'black'"
-          @click="$q.dark.toggle()"
+          @click="toggleDarkMode"
         />
       </q-toolbar>
     </q-header>
@@ -66,7 +66,6 @@ export default {
     }
   },
   mounted: function () {
-    this.$i18n.locale = this.$q.lang.getLocale()
     this.links = [
       {
         title: this.$t('pancakeswap'),
@@ -87,6 +86,12 @@ export default {
         link: 'https://linktr.ee/pancakeswap'
       },
     ]
+  },
+  methods: {
+    toggleDarkMode() {
+      this.$q.dark.toggle()
+      this.$q.localStorage.set('use-dark-mode', this.$q.dark.isActive)
+    },
   }
 }
 </script>
