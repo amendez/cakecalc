@@ -43,5 +43,8 @@ export default {
   graph_y_label: 'CAKE',
   graph_dataset_1_label: 'Cakes in a month',
   graph_dataset_2_label: 'Highest income',
-
+  code_repo: 'Code repository',
+  telegram_community: 'Telegram community',
+  important: 'IMPORTANT',
+  disclaimer: "MAKING AN INVESTMENT DECISION, INVESTORS MUST RELY ON THEIR OWN INVESTIGATION, INCLUDING THE MERITS AND RISKS INVOLVED. THIS TOOL IS PROVIDED AS IS, WITH NO WARRANTY, IT'S JUST A TOOL TO HELP YOU YOUR OWN TAKE DECISIONS.",
 }

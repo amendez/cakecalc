@@ -50,6 +50,34 @@
     <q-page-container class="main-container">
       <router-view />
     </q-page-container>
+
+    <footer>
+      <hr>
+      <div class="row justify-center q-gutter-sm">
+        <q-btn
+          flat
+          icon="code"
+          :label="$t('code_repo')"
+          href="https://github.com/amendez/cakecalc"
+          :color="$q.dark.isActive?'white':'black'"
+          target="_blank"
+        />
+        <q-btn
+          flat
+          icon="message"
+          :label="$t('telegram_community')"
+          href="https://t.me/PancakeSwapES"
+          :color="$q.dark.isActive?'white':'black'"
+          target="_blank"
+        />
+      </div>
+      <div class="row justify-center">
+        <p class="text-caption text-weight-light text-center q-py-sm q-px-xl">
+          <span class="text-weight-bold">{{ $t('important') }}:</span>
+          {{ $t('disclaimer') }}
+        </p>
+      </div>
+    </footer>
   </q-layout>
 </template>
 

@@ -42,5 +42,9 @@ export default {
   graph_x_label: 'Componer cada',
   graph_y_label: 'CAKE',
   graph_dataset_1_label: 'Cakes ganados en un mes',
-  graph_dataset_2_label: 'Ganancia máxima'
+  graph_dataset_2_label: 'Ganancia máxima',
+  code_repo: 'Código fuente',
+  telegram_community: 'Comunidad en Telegram',
+  important: 'IMPORTANTE',
+  disclaimer: "AL HACER UNA DECISIÓN DE INVERSIÓN, LOS INVERSORES TIENEN QUE HACER SU PROPIA INVESTIGACIÓN, INCLUYENDO LOS BENEFICIOS Y RIESGOS INVOLUCRADOS EN LA MISMA. ESTA HERRAMIENTA ES PROVISTA, COMO ESTÁ, SIN GARANTÍA. ES SOLO UNA HERRAMIENTA PARA AYUDARTE A TOMAR TUS PROPIAS DECISIONES.",
 }
