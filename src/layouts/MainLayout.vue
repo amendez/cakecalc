@@ -16,7 +16,7 @@
             <img src="~assets/cakecalc.png" width="48px" alt="CakeCalc">
           </q-avatar>
           CakeCalc
-          <q-badge align="top" color="orange">0.4 BETA</q-badge>
+          <q-badge align="top" color="orange">0.5 BETA</q-badge>
         </q-toolbar-title>
 
         <q-btn
@@ -61,6 +61,7 @@
           href="https://github.com/amendez/cakecalc"
           :color="$q.dark.isActive?'white':'black'"
           target="_blank"
+          type="a"
         />
         <q-btn
           flat
@@ -69,6 +70,7 @@
           href="https://t.me/PancakeSwapES"
           :color="$q.dark.isActive?'white':'black'"
           target="_blank"
+          type="a"
         />
       </div>
       <div class="row justify-center">
