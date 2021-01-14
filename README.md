@@ -3,6 +3,8 @@
 <img src="https://raw.githubusercontent.com/amendez/cakecalc/master/public/icons/favicon-32x32.png" align="left" width="32" height="32">
 A cake compound apy calculator, to decide when is better to compund your cakes
 
+###### ( Este mismo texto está en español al final de la página / This same text is in Spanish at the end of the page)
+
 ## Use the app
 * Visit <a href="https://cakecalc.herokuapp.com/">https://cakecalc.herokuapp.com/</a>!
 
