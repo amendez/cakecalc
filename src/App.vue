@@ -7,7 +7,7 @@
 export default {
   name: 'App',
   mounted: function () {
-    this.$i18n.locale = "es-ar"//this.$q.lang.getLocale()
+    this.$i18n.locale = this.$q.lang.getLocale()
     this.$q.dark.set(this.$q.localStorage.getItem('use-dark-mode'))
   }
 }
