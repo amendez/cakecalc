@@ -381,15 +381,19 @@ export default {
       this.pendingHarvest = result
     },
     async estimateGas() {
-      let gas = 157704
+      const defaultGas = 157704
+      let gas
       if (!this.pendingHarvest) {
         await this.getPendingCake()
       }
 
       try {
         gas = await this.poolContract().methods.enterStaking(this.pendingHarvest || 1).estimateGas({from: this.userAddress})
+        gas = Math.max(gas, defaultGas)
       }
-      catch (err) {}
+      catch (err) {
+        gas = defaultGas
+      }
       
       this.estimatedGasInBNB = this.toWei(gas * GAS_COST * 0.000000001)
     },
