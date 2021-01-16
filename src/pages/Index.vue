@@ -1,5 +1,36 @@
 <template>
   <q-page class="flex flex-center">
+    <q-dialog v-model="customAmountDialog" seamless position="top">
+      <q-card style="width: 60%">
+        <q-card-section class="row items-center no-wrap justify-around">
+          <q-input
+            outlined
+            dense
+            :value="Math.round(this.fromWei(amountToCalc))"
+            @input="val => { customAmount = val }"
+            style="max-width: 120px"
+          >
+            <template v-slot:prepend>
+              {{ CAKE }}
+            </template>
+          </q-input>
+          <q-slider
+            :value="Math.round(this.fromWei(amountToCalc))"
+            @change="val => { customAmount = val }"
+            :min="Math.round((Math.max(1, this.fromWei(amountInPool) / 10)) / 100 ) * 100"
+            :max="Math.round((Math.max(1000, this.fromWei(amountInPool) * 10)) / 100 ) * 100"
+            :step="Math.round((Math.max(1, this.fromWei(amountInPool) / 2)) / 100) * 100"
+            color="primary"
+            label-always
+            label
+            class="q-ml-sm"
+          />
+          <q-space />
+          <q-btn flat round icon="close" v-close-popup @click="customAmount = 0" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
     <div class="row q-gutter-sm" :class="{'alone':!connected}" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
@@ -12,11 +43,14 @@
           </q-card-section>
 
           <q-card-actions align="around">
-            <q-btn :disabled="connected" @click="connectWallet" flat icon="calculate">
+            <q-btn v-if="!connected" @click="connectWallet" color="primary" push icon="power">
               {{ $t('connect_wallet') }}
             </q-btn>
-            <q-btn :disabled="!connected" @click="refreshAll" flat icon="refresh">
+            <q-btn v-if="connected" @click="refreshAll" color="primary" push icon="refresh">
               {{ $t('refresh') }}
+            </q-btn>
+            <q-btn v-if="connected" @click="customAmountDialog = true" color="primary" push icon="edit">
+              {{ $t('change_amount') }}
             </q-btn>
           </q-card-actions>
         </q-card>
@@ -47,10 +81,19 @@
                 </tr>
                 <tr>
                   <td class="text-left">{{ $t('cake_balance') }}</td>
-                  <td class="text-right">{{ fromWei(amountInPool) | round }}</td>
+                  <td class="text-right">
+                    {{ fromWei(amountToCalc) | round }}
+                    <q-btn
+                      color="primary"
+                      icon="edit"
+                      size="sm"
+                      push round
+                      @click="customAmountDialog = true"
+                    />
+                  </td>
                 </tr>
                 <tr>
-                  <td class="text-left">{{ $t('cakes_to_harvest') }}</td>
+                  <td class="text-left">{{ CAKE }}{{ $t('cakes_to_harvest') }}</td>
                   <td class="text-right">{{ fromWei(pendingHarvest) | round }}</td>
                 </tr>
               </tbody>
@@ -93,7 +136,7 @@
         <br>
         <q-card>
           <q-card-section class="bg-primary text-white">
-            <div class="text-h6">{{ $t('summary') }}!</div>
+            <div class="text-h6">{{ $t('summary') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}!</div>
             <q-banner rounded class="shadow-5" :class="briefClass">
               <template v-slot:avatar>
                 <img src="~assets/cake.svg" width="64px" alt="pancakes">
@@ -121,7 +164,7 @@
         <br>
         <q-card>
           <q-card-section class="bg-warning text-white">
-            <div class="text-h6">{{ $t('line_graph') }}</div>
+            <div class="text-h6">{{ $t('line_graph') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}</div>
             <div class="graph-container shadow-5">
               <chart :chart-data="chartData" :options="chartOptions"/>
             </div>
@@ -135,7 +178,7 @@
         <br>
         <q-card>
           <q-card-section class="bg-secondary text-white">
-            <div class="text-h6">{{ $t('detailed_results') }}</div>
+            <div class="text-h6">{{ $t('detailed_results') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}</div>
             <q-markup-table class="results">
               <tbody>
                 <tr class="header">
@@ -188,12 +231,14 @@ export default {
       connected: false,
       isBSC: true,
       amountInPool: 0,
+      customAmount: 0,
       poolAllocPoint: 0,
       estimatedGasInBNB: 0,
       BNB_CAKERate: 0,
       pendingHarvest: 0,
       apy: 0,
       calculatedData: [],
+      customAmountDialog: false,
       hours: [
         1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
         (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
@@ -208,8 +253,14 @@ export default {
       'cakeContract': 'getCakeContract',
       'swapContract': 'getSwapContract',
     }),
+    CAKE(){
+      return "🥞"
+    },
     userAddress(){
       return this.web3.coinbase
+    },
+    amountToCalc(){
+      return this.customAmount ? this.toWei(this.customAmount) : this.amountInPool
     },
     estimatedGasInCAKE() {
       return this.toWei(this.fromWei(this.estimatedGasInBNB) * this.fromWei(this.BNB_CAKERate))
@@ -278,6 +329,12 @@ export default {
       }
     }
   },
+  watch: {
+    amountToCalc: async function () {
+      this.calculatedData = []
+      await this.doCalcs()
+    },
+  },
   async mounted () {
     const connected = this.$q.localStorage.getItem('account-connected')
     if (connected === 'true') {
@@ -304,8 +361,7 @@ export default {
         await this.$store.dispatch('store/getContractInstance')
         this.connected = this.web3.isInjected
         this.isBSC = this.web3.networkId == 56
-        await this.doCalcs()
-        this.stopLoading()
+        this.getUserInfo()
       }
       catch (error) {
         this.errorMessage = error
@@ -342,6 +398,7 @@ export default {
       this.BNB_CAKERate = rate[0]
     },
     async doCalcs() {
+      this.startLoading()
       for (const hour of this.hours) {
         await this.doCalc(hour)
       }
@@ -350,6 +407,7 @@ export default {
         this.hours.push(newHour)
         await this.doCalc(newHour)
       }
+      this.stopLoading()
     },
     async doCalc(hours = 1) {
       if (!this.apy) {
@@ -368,7 +426,7 @@ export default {
 
       const periodInterestRate = ((this.apy / 365 / 24) * hours) / 100 + 1
       const periodCount = 720 / hours
-      const investedAmount = this.amountInPool
+      const investedAmount = this.amountToCalc
       const networkFee = this.estimatedGasInCAKE
       
       const composedInterestRate = periodInterestRate ** periodCount
@@ -430,16 +488,15 @@ export default {
       this.apy =  annualBlockReward.div(lpSupply).divRound(BN("100000000")).toNumber() / 100
     },
     async refreshAll() {
-      this.startLoading()
-      this.amountInPool = 0
       this.poolAllocPoint = 0
       this.estimatedGasInBNB = 0
       this.BNB_CAKERate = 0
       this.pendingHarvest = 0
       this.apy = 0
       this.calculatedData = []
+      this.customAmount = 0
+      await this.getUserInfo()
       await this.doCalcs()
-      this.stopLoading()
     },
     startLoading() {
       this.$q.loading.show({
