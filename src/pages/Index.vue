@@ -217,6 +217,8 @@ import Web3 from 'web3'
 import { mapGetters } from 'vuex'
 import Chart from '../components/Chart'
 import { colors } from 'quasar'
+import tokens from '../utils/tokens'
+const { bnb, cake } = tokens
 
 const BNObject = Web3.utils.BN;
 const POOL_INDEX = 0
@@ -257,9 +259,6 @@ export default {
         1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
         (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
       ]
-      console.log("this.amountToCalc", this.amountToCalc);
-      console.log("this.toWei(500)", this.toWei(500));
-      console.log("this.amountToCalc", this.amountToCalc);
       return (this.fromWei(this.amountToCalc) > 500)? defaultPeriodLengths : defaultPeriodLengths.map(h => h * 24)
     },
     userAddress(){
@@ -404,7 +403,7 @@ export default {
       this.estimatedGasInBNB = this.toWei(gas * GAS_COST * 0.000000001)
     },
     async getConversionRate() {
-      const rate = await this.swapContract().methods.getAmountsIn(this.toWei(1), ["0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82","0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"]).call({ from: this.userAddress })
+      const rate = await this.swapContract().methods.getAmountsIn(this.toWei(1), [cake.address, bnb.address]).call({ from: this.userAddress })
       this.BNB_CAKERate = rate[0]
     },
     async doCalcs() {
