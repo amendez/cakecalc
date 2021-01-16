@@ -31,7 +31,7 @@
       </q-card>
     </q-dialog>
 
-    <div class="row q-gutter-sm" :class="{'alone':!connected}" >
+    <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
           <div v-if="connected && isBSC" class="swapsies"></div>
