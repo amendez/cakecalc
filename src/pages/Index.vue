@@ -158,7 +158,7 @@
       </div>
     </div>
 
-    <div class="row" v-if="connected && isBSC">
+    <div class="row" v-if="connected && isBSC && calculatedData.length">
       <br>
       <div class="col-12">
         <br>
@@ -230,7 +230,7 @@ export default {
     return {
       connected: false,
       isBSC: true,
-      amountInPool: 0,
+      amountInPool: undefined,
       customAmount: 0,
       poolAllocPoint: 0,
       estimatedGasInBNB: 0,
@@ -402,7 +402,7 @@ export default {
       for (const hour of this.hours) {
         await this.doCalc(hour)
       }
-      while (this.calculatedData.length < 5) {
+      while (this.calculatedData.length < 5 && this.amountToCalc) {
         const newHour = this.hours[this.hours.length-1] + (24 * 30)
         this.hours.push(newHour)
         await this.doCalc(newHour)
