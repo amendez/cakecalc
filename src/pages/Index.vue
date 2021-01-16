@@ -7,7 +7,7 @@
             outlined
             dense
             :value="Math.round(this.fromWei(amountToCalc))"
-            @input="val => { customAmount = val }"
+            @input="val => { customAmount = Math.max(1, val) }"
             style="max-width: 120px"
           >
             <template v-slot:prepend>
