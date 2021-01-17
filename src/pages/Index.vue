@@ -52,6 +52,9 @@
             <q-btn v-if="connected" @click="customAmountDialog = true" color="primary" push icon="edit">
               {{ $t('change_amount') }}
             </q-btn>
+            <q-btn v-if="connected" to="/prices" color="primary" push icon="monetization_on">
+              {{ $t('prices') }}
+            </q-btn>
           </q-card-actions>
         </q-card>
       </div>

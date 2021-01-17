@@ -48,4 +48,10 @@ export default {
   important: 'IMPORTANT',
   disclaimer: "MAKING AN INVESTMENT DECISION, INVESTORS MUST RELY ON THEIR OWN INVESTIGATION, INCLUDING THE MERITS AND RISKS INVOLVED. THIS TOOL IS PROVIDED AS IS, WITH NO WARRANTY, IT'S JUST A TOOL TO HELP YOU YOUR OWN TAKE DECISIONS.",
   change_amount: "Change amount",
+  prices: "Prices",
+  prices_table_title: "Coins and prices",
+  name: "Name",
+  price_busd: "Price (BUSD)",
+  wallet_balance: "Balance in wallet",
+  wallet_balance_busd: "Balance in wallet (BUSD)",
 }
