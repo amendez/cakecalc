@@ -7,6 +7,7 @@
       </q-card-section>
       <q-card-section>
         <q-table
+          :grid="$q.screen.xs"
           :title="$t('prices_table_title')"
           :data="coinRates"
           :columns="coinColumns"

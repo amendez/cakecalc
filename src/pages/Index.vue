@@ -47,7 +47,7 @@
               {{ $t('connect_wallet') }}
             </q-btn>
             <q-btn v-if="connected" @click="refreshAll" color="primary" push icon="refresh">
-              {{ $t('refresh') }}
+              <span v-if="$q.platform.is.desktop">{{ $t('refresh') }}</span>
             </q-btn>
             <q-btn v-if="connected" @click="customAmountDialog = true" color="primary" push icon="edit">
               {{ $t('change_amount') }}
