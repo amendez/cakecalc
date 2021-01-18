@@ -271,11 +271,19 @@ export default {
       return "🥞"
     },
     hours(){
-      const defaultPeriodLengths = [
-        1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
-        (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
-      ]
-      return (this.fromWei(this.amountToCalc) > 500)? defaultPeriodLengths : defaultPeriodLengths.map(h => h * 24)
+      if (this.fromWei(this.amountToCalc) > 500){
+        return [
+          1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
+          (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
+        ]
+      }
+      else {
+        return [
+          1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+          21,22,23,24,25,26,27,28,29,30,36,42,48,60,72,84,96,
+          (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
+        ].map(h => h * 24)
+      }
     },
     userAddress(){
       return this.web3.coinbase
