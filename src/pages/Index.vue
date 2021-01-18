@@ -434,7 +434,7 @@ export default {
       }
       if (!this.estimatedGasInCAKE) {
         promises.push(this.estimateGas())
-        promises.push(await this.getConversionRate())
+        promises.push(this.getConversionRate())
       }
       await Promise.all(promises)
 
