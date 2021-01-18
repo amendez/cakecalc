@@ -414,7 +414,7 @@ export default {
       for (const hour of this.hours) {
         await this.doCalc(hour)
       }
-      while (this.calculatedData.length < 5 && this.amountToCalc) {
+      while (this.calculatedData.length < 5 && this.amountToCalc != 0) {
         const newHour = this.hours[this.hours.length-1] + (24 * 30)
         this.hours.push(newHour)
         await this.doCalc(newHour)
@@ -448,15 +448,18 @@ export default {
       
       const cakesByPeriod = investedAmount * (periodInterestRate - 1)
       
-      console.debug('==================================================================')
-      console.debug('periodLengthInHours: ' + hours)
-      console.debug('periodInterestRate: ' + periodInterestRate)
-      console.debug('periodCount: ' + periodCount)
-      console.debug('investedAmount: ' + this.fromWei(investedAmount) + ' CAKES')
-      console.debug('networkFee: ' + this.fromWei(networkFee) + ' CAKES')
-      console.debug("composedInterestRate: " + composedInterestRate)
-      console.debug("totalFeeCost: " + this.fromWei(totalFeeCost) + ' CAKES')
-      console.debug("EARNED CAKES AFTER 1 MONTH: " + this.fromWei(result) + ' CAKES')
+      try {
+        console.debug('==================================================================')
+        console.debug('periodLengthInHours: ' + hours)
+        console.debug('periodInterestRate: ' + periodInterestRate)
+        console.debug('periodCount: ' + periodCount)
+        console.debug('investedAmount: ' + this.fromWei(investedAmount) + ' CAKES')
+        console.debug('networkFee: ' + this.fromWei(networkFee) + ' CAKES')
+        console.debug("composedInterestRate: " + composedInterestRate)
+        console.debug("totalFeeCost: " + this.fromWei(totalFeeCost) + ' CAKES')
+        console.debug("EARNED CAKES AFTER 1 MONTH: " + this.fromWei(result) + ' CAKES')
+      }
+      catch (e){}
       
       if (result < 0) {
         return 0
