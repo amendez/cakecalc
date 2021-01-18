@@ -268,5 +268,17 @@ export default {
     symbol: "ADA",
     decimals: 18,
     address: "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47"
+  },
+  btcst: {
+    name: "BTCST",
+    symbol: "BTCST",
+    decimals: 18,
+    address: "0x78650b139471520656b9e7aa7a5e9276814a38e9"
+  },
+  fuel: {
+    name: "FUEL",
+    symbol: "FUEL",
+    decimals: 18,
+    address: "0x2090c8295769791ab7a3cf1cc6e0aa19f35e441a"
   }
 }
