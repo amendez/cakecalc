@@ -54,4 +54,9 @@ export default {
   price_busd: "Precio (BUSD)",
   wallet_balance: "Balance en wallet",
   wallet_balance_busd: "Balance en wallet (BUSD)",
+  compound_earnings_chart_title: "Estimación de ganancias en 1 año (suponiendo APY constante) para",
+  compound_earnings_graph_title: "Estimación de ganancias en 1 año (suponiendo APY constante)",
+  compound_earnings_graph_x_label: "Tiempo",
+  compound_earnings_graph_y_label: "CAKE",
+  compound_earnings_graph_dataset_1_label: "Ganancias",
 }

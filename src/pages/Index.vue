@@ -168,9 +168,20 @@
         <q-card>
           <q-card-section class="bg-warning text-white">
             <div class="text-h6">{{ $t('line_graph') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}</div>
-            <div class="graph-container shadow-5">
-              <chart :chart-data="chartData" :options="chartOptions"/>
-            </div>
+              <periods-chart :calculated-data="calculatedData" :max-hours="maxHours" />
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
+    <div class="row" v-if="connected && isBSC && calculatedData.length">
+      <br>
+      <div class="col-12">
+        <br>
+        <q-card>
+          <q-card-section class="bg-negative text-white">
+            <div class="text-h6">{{ $t('compound_earnings_chart_title') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}</div>
+              <compund-earnings-chart :calculated-data="oneYearEarnings" />
           </q-card-section>
         </q-card>
       </div>
@@ -218,7 +229,8 @@
 <script>
 import Web3 from 'web3'
 import { mapGetters } from 'vuex'
-import Chart from '../components/Chart'
+import PeriodsChart from '../components/PeriodsChart'
+import CompundEarningsChart from '../components/CompundEarningsChart'
 import { colors } from 'quasar'
 import tokens from '../utils/tokens'
 const { bnb, cake } = tokens
@@ -230,7 +242,7 @@ const BN = (x) => new BNObject(x)
 
 export default {
   name: 'cakeculator',
-  components: { Chart },
+  components: { PeriodsChart, CompundEarningsChart },
   data: function () {
     return {
       connected: false,
@@ -243,6 +255,7 @@ export default {
       pendingHarvest: 0,
       apy: 0,
       calculatedData: [],
+      oneYearEarnings: [],
       customAmountDialog: false,
       errorMessage: "",
     }
@@ -285,57 +298,6 @@ export default {
       }
       return classes
     },
-    chartOptions(){
-      return {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-          display: false
-        },
-        title: {
-          display: true,
-          text: this.$t('graph_title')
-        },
-        scales: {
-          xAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: this.$t('graph_x_label')
-            }
-          }],
-          yAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: this.$t('graph_y_label')
-            }
-          }]
-        }
-      }
-    },
-    chartData() {
-      return {
-        labels: this.calculatedData.map(elem => this.buildPeriodName(elem.periodLengthInHours)),
-        datasets: [
-          {
-            data: this.calculatedData.map(elem => this.$options.filters.round(this.fromWei(elem.earned), 2)),
-            label: this.$t('graph_dataset_1_label'),
-            borderColor: colors.getBrand('primary'),
-            fill: true,
-            lineTension: 0.1,
-          },
-          {
-            label: this.$t('graph_dataset_2_label'),
-            backgroundColor: colors.getBrand('primary'),
-            data: this.calculatedData.map(elem => elem.periodLengthInHours == this.maxHours.periodLengthInHours?this.fromWei(elem.earned):null ),
-            pointRadius: 10,
-            pointHoverRadius: 15,
-            showLine: false
-          }
-        ]
-      }
-    }
   },
   watch: {
     amountToCalc: async function () {
@@ -420,8 +382,20 @@ export default {
         await this.doCalc(newHour)
       }
       this.stopLoading()
+
+      const hours = this.maxHours.periodLengthInHours 
+
+      this.oneYearEarnings = []
+      let result = await this.doCalc(hours, 1, false)
+      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 1, earned: this.toWei(result)})
+      result = await this.doCalc(hours, 2, false)
+      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 2, earned: this.toWei(result)})
+      result = await this.doCalc(hours, 6, false)
+      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 6, earned: this.toWei(result)})
+      result = await this.doCalc(hours, 12, false)
+      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 12, earned: this.toWei(result)})
     },
-    async doCalc(hours = 1) {
+    async doCalc(hours = 1, months = 1, pushData = true) {
       const promises = []
       if (!this.apy) {
         promises.push(this.getAPY())
@@ -439,7 +413,7 @@ export default {
       await Promise.all(promises)
 
       const periodInterestRate = ((this.apy / 365 / 24) * hours) / 100 + 1
-      const periodCount = 720 / hours
+      const periodCount = (720 * months) / hours
       const investedAmount = this.amountToCalc
       const networkFee = this.estimatedGasInCAKE
       
@@ -467,17 +441,19 @@ export default {
         return 0
       }
       
-      this.calculatedData.push({
-        periodLengthInHours: hours,
-        cakesByPeriod: cakesByPeriod,
-        periodInterestRate: periodInterestRate,
-        periodCount: periodCount,
-        investedAmount: investedAmount,
-        networkFeeInCakes: networkFee,
-        composedInterestRate: composedInterestRate,
-        totalFeeCostInPeriod: totalFeeCost,
-        earned: result
-      })
+      if (pushData) {
+        this.calculatedData.push({
+          periodLengthInHours: hours,
+          cakesByPeriod: cakesByPeriod,
+          periodInterestRate: periodInterestRate,
+          periodCount: periodCount,
+          investedAmount: investedAmount,
+          networkFeeInCakes: networkFee,
+          composedInterestRate: composedInterestRate,
+          totalFeeCostInPeriod: totalFeeCost,
+          earned: result
+        })
+      }
       
       return this.fromWei(result)
     },
@@ -565,15 +541,5 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
     background-size: cover;
     background-position-x: center;
     background-position-y: top;
-  }
-  .body--dark .graph-container {
-    background-color: #333;
-  }
-  .graph-container {
-    background-color: white;
-    border-radius: 4px;
-    height: 400px;
-    position: relative;
-    vertical-align: middle;
   }
 </style>
