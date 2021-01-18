@@ -422,19 +422,21 @@ export default {
       this.stopLoading()
     },
     async doCalc(hours = 1) {
+      const promises = []
       if (!this.apy) {
-        await this.getAPY()
+        promises.push(this.getAPY())
       }
       if (!this.amountInPool) {
-        await this.getUserInfo()
+        promises.push(this.getUserInfo())
       }
       if (!this.pendingHarvest) {
-        await this.getPendingCake()
+        promises.push(this.getPendingCake())
       }
       if (!this.estimatedGasInCAKE) {
-        await this.estimateGas()
-        await this.getConversionRate()
+        promises.push(this.estimateGas())
+        promises.push(await this.getConversionRate())
       }
+      await Promise.all(promises)
 
       const periodInterestRate = ((this.apy / 365 / 24) * hours) / 100 + 1
       const periodCount = 720 / hours
