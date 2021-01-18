@@ -166,5 +166,107 @@ export default {
     symbol: "SPG",
     decimals: 9,
     address: "0x3aabcf53a1930a42e18d938c019e83ebee50a849"
+  },
+  thether: {
+    name: "Tether",
+    symbol: "USDT",
+    decimals: 18,
+    address: "0x55d398326f99059ff775485246999027b3197955"
+  },
+  eth: {
+    name: "Ethereum",
+    symbol: "ETH",
+    decimals: 18,
+    address: "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+  },
+  uni: {
+    name: "Uniswap",
+    symbol: "UNI",
+    decimals: 18,
+    address: "0xbf5140a22578168fd562dccf235e5d43a02ce9b1"
+  },
+  btcb: {
+    name: "Bitcoin",
+    symbol: "BTCB",
+    decimals: 18,
+    address: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+  },
+  link: {
+    name: "Chainlink",
+    symbol: "LINK",
+    decimals: 18,
+    address: "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd"
+  },
+  dai: {
+    name: "DAI",
+    symbol: "DAI",
+    decimals: 18,
+    address: "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3"
+  },
+  dot: {
+    name: "Polkadot",
+    symbol: "DOT",
+    decimals: 18,
+    address: "0x7083609fce4d1d8dc0c979aab8c869ea2c873402"
+  },
+  ltc: {
+    name: "Litecoin",
+    symbol: "LTC",
+    decimals: 18,
+    address: "0x4338665cbb7b2485a8855a139b75d5e34ab0db94"
+  },
+  eos: {
+    name: "EOS",
+    symbol: "EOS",
+    decimals: 18,
+    address: "0x56b6fb708fc5732dec1afc8d8556423a2edccbd6"
+  },
+  band: {
+    name: "Band",
+    symbol: "BAND",
+    decimals: 18,
+    address: "0xad6caeb32cd2c308980a548bd0bc5aa4306c6c18"
+  },
+  vai: {
+    name: "VAI",
+    symbol: "VAI",
+    decimals: 18,
+    address: "0x4bd17003473389a42daf6a0a729f6fdb328bbbd7"
+  },
+  usdc: {
+    name: "USDC",
+    symbol: "USDC",
+    decimals: 18,
+    address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+  },
+  bdo: {
+    name: "bDollar",
+    symbol: "BDO",
+    decimals: 18,
+    address: "0x190b589cf9fb8ddeabbfeae36a813ffb2a702454"
+  },
+  yfi: {
+    name: "Yearn",
+    symbol: "YFI",
+    decimals: 18,
+    address: "0x88f1a5ae2a3bf98aeaf342d26b30a79438c9142e"
+  },
+  xvs: {
+    name: "Venus",
+    symbol: "XVS",
+    decimals: 18,
+    address: "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63"
+  },
+  xrp: {
+    name: "Ripple",
+    symbol: "XRP",
+    decimals: 18,
+    address: "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe"
+  },
+  ada: {
+    name: "Cardano",
+    symbol: "ADA",
+    decimals: 18,
+    address: "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47"
   }
 }
