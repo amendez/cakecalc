@@ -47,10 +47,13 @@
               {{ $t('connect_wallet') }}
             </q-btn>
             <q-btn v-if="connected" @click="refreshAll" color="primary" push icon="refresh">
-              {{ $t('refresh') }}
+              <span v-if="$q.platform.is.desktop">{{ $t('refresh') }}</span>
             </q-btn>
             <q-btn v-if="connected" @click="customAmountDialog = true" color="primary" push icon="edit">
               {{ $t('change_amount') }}
+            </q-btn>
+            <q-btn v-if="connected" to="/prices" color="primary" push icon="monetization_on">
+              {{ $t('prices') }}
             </q-btn>
           </q-card-actions>
         </q-card>
@@ -217,6 +220,8 @@ import Web3 from 'web3'
 import { mapGetters } from 'vuex'
 import Chart from '../components/Chart'
 import { colors } from 'quasar'
+import tokens from '../utils/tokens'
+const { bnb, cake } = tokens
 
 const BNObject = Web3.utils.BN;
 const POOL_INDEX = 0
@@ -257,9 +262,6 @@ export default {
         1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
         (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
       ]
-      console.log("this.amountToCalc", this.amountToCalc);
-      console.log("this.toWei(500)", this.toWei(500));
-      console.log("this.amountToCalc", this.amountToCalc);
       return (this.fromWei(this.amountToCalc) > 500)? defaultPeriodLengths : defaultPeriodLengths.map(h => h * 24)
     },
     userAddress(){
@@ -404,7 +406,7 @@ export default {
       this.estimatedGasInBNB = this.toWei(gas * GAS_COST * 0.000000001)
     },
     async getConversionRate() {
-      const rate = await this.swapContract().methods.getAmountsIn(this.toWei(1), ["0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82","0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"]).call({ from: this.userAddress })
+      const rate = await this.swapContract().methods.getAmountsIn(this.toWei(1), [cake.address, bnb.address]).call({ from: this.userAddress })
       this.BNB_CAKERate = rate[0]
     },
     async doCalcs() {
@@ -412,7 +414,7 @@ export default {
       for (const hour of this.hours) {
         await this.doCalc(hour)
       }
-      while (this.calculatedData.length < 5 && this.amountToCalc) {
+      while (this.calculatedData.length < 5 && this.amountToCalc != 0) {
         const newHour = this.hours[this.hours.length-1] + (24 * 30)
         this.hours.push(newHour)
         await this.doCalc(newHour)
@@ -420,19 +422,21 @@ export default {
       this.stopLoading()
     },
     async doCalc(hours = 1) {
+      const promises = []
       if (!this.apy) {
-        await this.getAPY()
+        promises.push(this.getAPY())
       }
       if (!this.amountInPool) {
-        await this.getUserInfo()
+        promises.push(this.getUserInfo())
       }
       if (!this.pendingHarvest) {
-        await this.getPendingCake()
+        promises.push(this.getPendingCake())
       }
       if (!this.estimatedGasInCAKE) {
-        await this.estimateGas()
-        await this.getConversionRate()
+        promises.push(this.estimateGas())
+        promises.push(this.getConversionRate())
       }
+      await Promise.all(promises)
 
       const periodInterestRate = ((this.apy / 365 / 24) * hours) / 100 + 1
       const periodCount = 720 / hours
@@ -446,15 +450,18 @@ export default {
       
       const cakesByPeriod = investedAmount * (periodInterestRate - 1)
       
-      console.debug('==================================================================')
-      console.debug('periodLengthInHours: ' + hours)
-      console.debug('periodInterestRate: ' + periodInterestRate)
-      console.debug('periodCount: ' + periodCount)
-      console.debug('investedAmount: ' + this.fromWei(investedAmount) + ' CAKES')
-      console.debug('networkFee: ' + this.fromWei(networkFee) + ' CAKES')
-      console.debug("composedInterestRate: " + composedInterestRate)
-      console.debug("totalFeeCost: " + this.fromWei(totalFeeCost) + ' CAKES')
-      console.debug("EARNED CAKES AFTER 1 MONTH: " + this.fromWei(result) + ' CAKES')
+      try {
+        console.debug('==================================================================')
+        console.debug('periodLengthInHours: ' + hours)
+        console.debug('periodInterestRate: ' + periodInterestRate)
+        console.debug('periodCount: ' + periodCount)
+        console.debug('investedAmount: ' + this.fromWei(investedAmount) + ' CAKES')
+        console.debug('networkFee: ' + this.fromWei(networkFee) + ' CAKES')
+        console.debug("composedInterestRate: " + composedInterestRate)
+        console.debug("totalFeeCost: " + this.fromWei(totalFeeCost) + ' CAKES')
+        console.debug("EARNED CAKES AFTER 1 MONTH: " + this.fromWei(result) + ' CAKES')
+      }
+      catch (e){}
       
       if (result < 0) {
         return 0

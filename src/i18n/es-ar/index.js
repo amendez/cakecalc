@@ -48,4 +48,10 @@ export default {
   important: 'IMPORTANTE',
   disclaimer: "AL HACER UNA DECISIÓN DE INVERSIÓN, LOS INVERSORES TIENEN QUE HACER SU PROPIA INVESTIGACIÓN, INCLUYENDO LOS BENEFICIOS Y RIESGOS INVOLUCRADOS EN LA MISMA. ESTA HERRAMIENTA ES PROVISTA, COMO ESTÁ, SIN GARANTÍA. ES SOLO UNA HERRAMIENTA PARA AYUDARTE A TOMAR TUS PROPIAS DECISIONES.",
   change_amount: "Cambiar monto",
+  prices: "Precios",
+  prices_table_title: "Tenencias y precios",
+  name: "Nombre",
+  price_busd: "Precio (BUSD)",
+  wallet_balance: "Balance en wallet",
+  wallet_balance_busd: "Balance en wallet (BUSD)",
 }
