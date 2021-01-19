@@ -54,4 +54,12 @@ export default {
   price_busd: "Precio (BUSD)",
   wallet_balance: "Balance en wallet",
   wallet_balance_busd: "Balance en wallet (BUSD)",
+  compound_earnings_chart_title: "Estimación de ganancias en 1 año (suponiendo APY constante) para",
+  compound_earnings_graph_title: "Estimación de ganancias en 1 año (suponiendo APY constante)",
+  compound_earnings_graph_x_label: "Tiempo",
+  compound_earnings_graph_y_label: "CAKE",
+  compound_earnings_graph_dataset_1_label: "Ganancias",
+  no_wallet_error_title: "Necesitas una wallet",
+  no_wallet_error_message_1: "Por favor, usa tu wallet para usar esta calculadora, leemos los contratos de PancakeSwap directamente, sin intermediarios.",
+  no_wallet_error_message_2: "Puedes obtener una buena wallet aquí:",
 }

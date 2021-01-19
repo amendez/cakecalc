@@ -31,7 +31,31 @@
       </q-card>
     </q-dialog>
 
-    <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog" >
+    <div v-if="!isWalletBrowser" class="row q-gutter-sm alone">
+      <div class="col-12 col-md">
+        <q-card>
+          <q-card-section class="bg-accent text-white">
+            <div class="text-h6">{{ $t('no_wallet_error_title') }}</div>
+            <div class="text-subtitle2">{{ $t('no_wallet_error_message_1') }}</div>
+          </q-card-section>
+            <div class="text-body2 text-weight-ligh q-pa-sm">{{ $t('no_wallet_error_message_2') }}</div>
+            <q-separator />
+          <q-card-actions align="around">
+            <q-btn type="a" flat href="https://metamask.io/" target="_blank">
+              Metamask
+            </q-btn>
+            <q-btn type="a" flat href="https://www.safepal.io/" target="_blank">
+              Safepal
+            </q-btn>
+            <q-btn type="a" flat href="https://trustwallet.com/" target="_blank">
+              Trustwallet
+            </q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
+    
+    <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog && isWalletBrowser" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
           <div v-if="connected && isBSC" class="swapsies"></div>
@@ -168,9 +192,20 @@
         <q-card>
           <q-card-section class="bg-warning text-white">
             <div class="text-h6">{{ $t('line_graph') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}</div>
-            <div class="graph-container shadow-5">
-              <chart :chart-data="chartData" :options="chartOptions"/>
-            </div>
+              <periods-chart :calculated-data="calculatedData" :max-hours="maxHours" />
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
+    <div class="row" v-if="connected && isBSC && calculatedData.length">
+      <br>
+      <div class="col-12">
+        <br>
+        <q-card>
+          <q-card-section class="bg-negative text-white">
+            <div class="text-h6">{{ $t('compound_earnings_chart_title') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}</div>
+              <compund-earnings-chart :calculated-data="oneYearEarnings" />
           </q-card-section>
         </q-card>
       </div>
@@ -218,7 +253,8 @@
 <script>
 import Web3 from 'web3'
 import { mapGetters } from 'vuex'
-import Chart from '../components/Chart'
+import PeriodsChart from '../components/PeriodsChart'
+import CompundEarningsChart from '../components/CompundEarningsChart'
 import { colors } from 'quasar'
 import tokens from '../utils/tokens'
 const { bnb, cake } = tokens
@@ -230,7 +266,7 @@ const BN = (x) => new BNObject(x)
 
 export default {
   name: 'cakeculator',
-  components: { Chart },
+  components: { PeriodsChart, CompundEarningsChart },
   data: function () {
     return {
       connected: false,
@@ -243,6 +279,7 @@ export default {
       pendingHarvest: 0,
       apy: 0,
       calculatedData: [],
+      oneYearEarnings: [],
       customAmountDialog: false,
       errorMessage: "",
     }
@@ -258,11 +295,19 @@ export default {
       return "🥞"
     },
     hours(){
-      const defaultPeriodLengths = [
-        1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
-        (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
-      ]
-      return (this.fromWei(this.amountToCalc) > 500)? defaultPeriodLengths : defaultPeriodLengths.map(h => h * 24)
+      if (this.fromWei(this.amountToCalc) > 500){
+        return [
+          1,2,3,4,5,6,12,18,24,30,36,42,48,60,72,84,96,
+          (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
+        ]
+      }
+      else {
+        return [
+          1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+          21,22,23,24,25,26,27,28,29,30,36,42,48,60,72,84,96,
+          (12*9),12*10,24*6,24*7,24*8,24*9,24*10,24*15,24*20,24*25,24*30
+        ].map(h => h * 24)
+      }
     },
     userAddress(){
       return this.web3.coinbase
@@ -285,56 +330,9 @@ export default {
       }
       return classes
     },
-    chartOptions(){
-      return {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-          display: false
-        },
-        title: {
-          display: true,
-          text: this.$t('graph_title')
-        },
-        scales: {
-          xAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: this.$t('graph_x_label')
-            }
-          }],
-          yAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: this.$t('graph_y_label')
-            }
-          }]
-        }
-      }
-    },
-    chartData() {
-      return {
-        labels: this.calculatedData.map(elem => this.buildPeriodName(elem.periodLengthInHours)),
-        datasets: [
-          {
-            data: this.calculatedData.map(elem => this.$options.filters.round(this.fromWei(elem.earned), 2)),
-            label: this.$t('graph_dataset_1_label'),
-            borderColor: colors.getBrand('primary'),
-            fill: true,
-            lineTension: 0.1,
-          },
-          {
-            label: this.$t('graph_dataset_2_label'),
-            backgroundColor: colors.getBrand('primary'),
-            data: this.calculatedData.map(elem => elem.periodLengthInHours == this.maxHours.periodLengthInHours?this.fromWei(elem.earned):null ),
-            pointRadius: 10,
-            pointHoverRadius: 15,
-            showLine: false
-          }
-        ]
-      }
+    isWalletBrowser() {
+      return typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' 
+        || typeof window !== 'undefined' && typeof window.web3 !== 'undefined'
     }
   },
   watch: {
@@ -420,8 +418,17 @@ export default {
         await this.doCalc(newHour)
       }
       this.stopLoading()
+
+      const hours = this.maxHours.periodLengthInHours 
+
+      this.oneYearEarnings = []
+      for (let index = 0; index <= 12; index++) {
+        this.doCalc(hours, index, false).then(result => {
+          this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * index, earned: this.toWei(result)})
+        })
+      }
     },
-    async doCalc(hours = 1) {
+    async doCalc(hours = 1, months = 1, pushData = true) {
       const promises = []
       if (!this.apy) {
         promises.push(this.getAPY())
@@ -439,7 +446,7 @@ export default {
       await Promise.all(promises)
 
       const periodInterestRate = ((this.apy / 365 / 24) * hours) / 100 + 1
-      const periodCount = 720 / hours
+      const periodCount = (720 * months) / hours
       const investedAmount = this.amountToCalc
       const networkFee = this.estimatedGasInCAKE
       
@@ -467,17 +474,19 @@ export default {
         return 0
       }
       
-      this.calculatedData.push({
-        periodLengthInHours: hours,
-        cakesByPeriod: cakesByPeriod,
-        periodInterestRate: periodInterestRate,
-        periodCount: periodCount,
-        investedAmount: investedAmount,
-        networkFeeInCakes: networkFee,
-        composedInterestRate: composedInterestRate,
-        totalFeeCostInPeriod: totalFeeCost,
-        earned: result
-      })
+      if (pushData) {
+        this.calculatedData.push({
+          periodLengthInHours: hours,
+          cakesByPeriod: cakesByPeriod,
+          periodInterestRate: periodInterestRate,
+          periodCount: periodCount,
+          investedAmount: investedAmount,
+          networkFeeInCakes: networkFee,
+          composedInterestRate: composedInterestRate,
+          totalFeeCostInPeriod: totalFeeCost,
+          earned: result
+        })
+      }
       
       return this.fromWei(result)
     },
@@ -565,15 +574,5 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
     background-size: cover;
     background-position-x: center;
     background-position-y: top;
-  }
-  .body--dark .graph-container {
-    background-color: #333;
-  }
-  .graph-container {
-    background-color: white;
-    border-radius: 4px;
-    height: 400px;
-    position: relative;
-    vertical-align: middle;
   }
 </style>
