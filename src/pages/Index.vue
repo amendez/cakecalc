@@ -31,7 +31,31 @@
       </q-card>
     </q-dialog>
 
-    <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog" >
+    <div v-if="!isWalletBrowser" class="row q-gutter-sm alone">
+      <div class="col-12 col-md">
+        <q-card>
+          <q-card-section class="bg-accent text-white">
+            <div class="text-h6">{{ $t('no_wallet_error_title') }}</div>
+            <div class="text-subtitle2">{{ $t('no_wallet_error_message_1') }}</div>
+          </q-card-section>
+            <div class="text-body2 text-weight-ligh q-pa-sm">{{ $t('no_wallet_error_message_2') }}</div>
+            <q-separator />
+          <q-card-actions align="around">
+            <q-btn type="a" flat href="https://metamask.io/" target="_blank">
+              Metamask
+            </q-btn>
+            <q-btn type="a" flat href="https://www.safepal.io/" target="_blank">
+              Safepal
+            </q-btn>
+            <q-btn type="a" flat href="https://trustwallet.com/" target="_blank">
+              Trustwallet
+            </q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
+    
+    <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog && isWalletBrowser" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
         <q-card>
           <div v-if="connected && isBSC" class="swapsies"></div>
@@ -306,6 +330,10 @@ export default {
       }
       return classes
     },
+    isWalletBrowser() {
+      return typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' 
+        || typeof window !== 'undefined' && typeof window.web3 !== 'undefined'
+    }
   },
   watch: {
     amountToCalc: async function () {
@@ -394,14 +422,11 @@ export default {
       const hours = this.maxHours.periodLengthInHours 
 
       this.oneYearEarnings = []
-      let result = await this.doCalc(hours, 1, false)
-      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 1, earned: this.toWei(result)})
-      result = await this.doCalc(hours, 2, false)
-      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 2, earned: this.toWei(result)})
-      result = await this.doCalc(hours, 6, false)
-      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 6, earned: this.toWei(result)})
-      result = await this.doCalc(hours, 12, false)
-      this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * 12, earned: this.toWei(result)})
+      for (let index = 0; index <= 12; index++) {
+        this.doCalc(hours, index, false).then(result => {
+          this.oneYearEarnings.push({periodLengthInHours: 24 * 30 * index, earned: this.toWei(result)})
+        })
+      }
     },
     async doCalc(hours = 1, months = 1, pushData = true) {
       const promises = []

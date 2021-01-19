@@ -46,7 +46,7 @@ export default {
   code_repo: 'Code repository',
   telegram_community: 'Telegram community',
   important: 'IMPORTANT',
-  disclaimer: "MAKING AN INVESTMENT DECISION, INVESTORS MUST RELY ON THEIR OWN INVESTIGATION, INCLUDING THE MERITS AND RISKS INVOLVED. THIS TOOL IS PROVIDED AS IS, WITH NO WARRANTY, IT'S JUST A TOOL TO HELP YOU YOUR OWN TAKE DECISIONS.",
+  disclaimer: "MAKING AN INVESTMENT DECISION, INVESTORS MUST RELY ON THEIR OWN INVESTIGATION, INCLUDING THE MERITS AND RISKS INVOLVED. THIS TOOL IS PROVIDED AS IS, WITH NO WARRANTY, IT'S JUST A TOOL TO HELP YOU TAKE YOUR OWN DECISIONS.",
   change_amount: "Change amount",
   prices: "Prices",
   prices_table_title: "Coins and prices",
@@ -59,4 +59,7 @@ export default {
   compound_earnings_graph_x_label: "Time",
   compound_earnings_graph_y_label: "CAKE",
   compound_earnings_graph_dataset_1_label: "Earnings",
+  no_wallet_error_title: "You'll need a wallet",
+  no_wallet_error_message_1: "Please, use your wallet to access this calculator, we read PancakeSwap's contracts directly, no intermediaries.",
+  no_wallet_error_message_2: "You can get a good wallet here:",
 }
