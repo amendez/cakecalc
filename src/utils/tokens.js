@@ -280,5 +280,25 @@ export default {
     symbol: "FUEL",
     decimals: 18,
     address: "0x2090c8295769791ab7a3cf1cc6e0aa19f35e441a"
-  }
+  },
+  flp: {
+    name: "Falopa",
+    symbol: "FLP",
+    decimals: 18,
+    address: "0x87ff96aba480f1813af5c780387d8de7cf7d8261"
+  },
+  wsote: {
+    name: "Wrapped SOTE",
+    symbol: "wSOTE",
+    decimals: 18,
+    address: "0x541e619858737031a1244a5d0cd47e5ef480342c"
+  },
+  long: {
+    name: "Helmet Long Option",
+    symbol: "LONG",
+    decimals: 18,
+    address: "0x17934fef9fc93128858e9945261524ab0581612e"
+  },
+
+  
 }
