@@ -59,7 +59,7 @@ export default {
   compound_earnings_graph_x_label: "Time",
   compound_earnings_graph_y_label: "CAKE",
   compound_earnings_graph_dataset_1_label: "Earnings",
-  no_wallet_error_title: "You'll need a wallet",
+  no_wallet_error_title: "You'll need to connect a wallet",
   no_wallet_error_message_1: "Please, use your wallet to access this calculator, we read PancakeSwap's contracts directly, no intermediaries.",
   no_wallet_error_message_2: "You can get a good wallet here:",
 }

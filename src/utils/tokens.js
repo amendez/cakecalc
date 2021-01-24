@@ -299,6 +299,34 @@ export default {
     decimals: 18,
     address: "0x17934fef9fc93128858e9945261524ab0581612e"
   },
-
-  
+  mtsla: {
+    name: "Mirror TSLA",
+    symbol: "mTSLA",
+    decimals: 18,
+    address: "0xF215A127A196e3988C09d052e16BcFD365Cd7AA3"
+  },
+  mamzn: {
+    name: "Mirror AMZN",
+    symbol: "mAMZN",
+    decimals: 18,
+    address: "0x3947B992DC0147D2D89dF0392213781b04B25075"
+  },
+  mnflx: {
+    name: "Mirror NFLX",
+    symbol: "mNFLX",
+    decimals: 18,
+    address: "0xa04F060077D90Fe2647B61e4dA4aD1F97d6649dc"
+  },
+  mgoogl: {
+    name: "Mirror GOOGL",
+    symbol: "mGOOGL",
+    decimals: 18,
+    address: "0x62D71B23bF15218C7d2D7E48DBbD9e9c650B173f"
+  },
+  ust: {
+    name: "UST Token",
+    symbol: "UST",
+    decimals: 18,
+    address: "0x23396cF899Ca06c4472205fC903bDB4de249D6fC"
+  }
 }
