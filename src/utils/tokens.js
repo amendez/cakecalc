@@ -299,6 +299,24 @@ export default {
     decimals: 18,
     address: "0x17934fef9fc93128858e9945261524ab0581612e"
   },
+  supra: {
+    name: "Supra",
+    symbol: "SUPRA",
+    decimals: 18,
+    address: "0x4ae2f11df681eec979bd93085dd1a05e9593c8c6"
+  },
+  auto: {
+    name: "AUTOv2",
+    symbol: "AUTO",
+    decimals: 18,
+    address: "0xa184088a740c695e156f91f5cc086a06bb78b827"
+  },
+  elrond: {
+    name: "Elrond",
+    symbol: "EGLD",
+    decimals: 18,
+    address: "0xbf7c81fff98bbe61b40ed186e4afd6ddd01337fe"
+  },
   mtsla: {
     name: "Mirror TSLA",
     symbol: "mTSLA",

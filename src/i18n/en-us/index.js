@@ -12,7 +12,7 @@ export default {
   cake_balance: 'CAKE Balance',
   cakes_to_harvest: 'to harvest',
   pool_info: 'Pool info',
-  apy: 'APY',
+  apy: 'APR',
   bnb_cake_rate: 'BNB/CAKE rate',
   bnb_gas_cost: 'Est. gas cost (BNB)',
   cake_gas_cost: 'Est. gas cost (CAKE)',
