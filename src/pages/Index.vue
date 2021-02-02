@@ -6,6 +6,7 @@
           <q-input
             outlined
             dense
+            debounce="1000"
             :value="Math.round(this.fromWei(amountToCalc))"
             @input="val => { customAmount = Math.max(1, val) }"
             style="max-width: 120px"
@@ -255,7 +256,6 @@ import Web3 from 'web3'
 import { mapGetters } from 'vuex'
 import PeriodsChart from '../components/PeriodsChart'
 import CompundEarningsChart from '../components/CompundEarningsChart'
-import { colors } from 'quasar'
 import tokens from '../utils/tokens'
 const { bnb, cake } = tokens
 
