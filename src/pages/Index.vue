@@ -100,12 +100,21 @@
             <q-markup-table>
               <tbody>
                 <tr>
-                  <td class="text-left">{{ $t('address') }}</td>
+                  <td class="text-left">{{ $t('address') }} (BNB: {{ fromWei(web3.balance) | round }})</td>
                   <td class="text-right">{{ userAddress.substring(0,8) }}.....{{ userAddress.substring(34) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left">{{ $t('bnb_balance') }}</td>
-                  <td class="text-right">{{ fromWei(web3.balance) | round }}</td>
+                  <td class="text-left">{{ $t('gas_unit_price') }}</td>
+                  <td class="text-right">
+                    <q-input
+                      outlined
+                      dense
+                      debounce="2000"
+                      :value="gasUnitPrice"
+                      @input="val => { gasUnitPrice = val }"
+                      style="max-width: 50px;float: right;"
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <td class="text-left">{{ $t('cake_balance') }}</td>
@@ -261,7 +270,6 @@ const { bnb, cake } = tokens
 
 const BNObject = Web3.utils.BN;
 const POOL_INDEX = 0
-const GAS_COST = 20
 const BN = (x) => new BNObject(x)
 
 export default {
@@ -283,6 +291,7 @@ export default {
       customAmountDialog: false,
       errorMessage: "",
       teamId: 0,
+      gasUnitPrice: 15,
     }
   },
   computed: {
@@ -349,6 +358,11 @@ export default {
   watch: {
     amountToCalc: async function () {
       this.calculatedData = []
+      await this.doCalcs()
+    },
+    gasUnitPrice: async function () {
+      this.calculatedData = []
+      await this.estimateGas()
       await this.doCalcs()
     },
   },
@@ -419,7 +433,7 @@ export default {
         gas = defaultGas
       }
       
-      this.estimatedGasInBNB = this.toWei(gas * GAS_COST * 0.000000001)
+      this.estimatedGasInBNB = this.toWei(gas * this.gasUnitPrice * 0.000000001)
     },
     async getConversionRate() {
       const rate = await this.swapContract().methods.getAmountsIn(this.toWei(1), [cake.address, bnb.address]).call({ from: this.userAddress })
