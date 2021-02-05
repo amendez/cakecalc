@@ -57,9 +57,9 @@
     </div>
     
     <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog && isWalletBrowser" >
-      <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
-        <q-card class="main-picture">
-          <div v-if="connected && isBSC" style="height: 140px"></div>
+      <div class="col-12 col-md " :class="{'col-md':connected, 'col-md':!connected}">
+        <q-card class="main-picture-background">
+          <div v-if="connected && isBSC" class="main-picture"></div>
           <q-card-section class="text-white light-message" :class="{'bg-secondary':!connected, 'bg-green':connected}">
             <div class="text-h6">{{ !connected ? $t("connect_your_wallet"): $t("wallet_connected") }}</div>
             <div class="text-subtitle2" v-if="!connected">
@@ -389,7 +389,7 @@ export default {
     async getProfile() {
       const objectResult = await this.pancakeProfileContract().methods.getUserProfile(this.userAddress).call({ from: this.userAddress })
       if (objectResult && objectResult[2]) {
-        this.teamId = 1 //objectResult[2]
+        this.teamId = objectResult[2]
       }
     },
     async getPoolInfo() {
@@ -590,20 +590,35 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
     opacity: 0.9;
   }
   .main-picture {
-    background-size: auto;
+    height: 140px;
+    background-size: contain;
     background-position-x: center;
     background-position-y: center;
+    background-repeat: no-repeat;
+  }
+  .main-picture-background { 
+    background-size: cover;
   }
   .swapsies .main-picture {
     background-image: url("~assets/swapsies.png");
+    background-size: cover;
   }
   .syrup-storm .main-picture {
-    background-image: url("~assets/syrup-storm-lg.png");
+    background-image: url("~assets/syrup-storm.gif");
   }
   .fearsome-flippers .main-picture {
-    background-image: url("~assets/fearsome-flippers-lg.png");
+    background-image: url("~assets/fearsome-flippers.gif");
   }
   .chaotic-cakers .main-picture {
-    background-image: url("~assets/chaotic-cakers-lg.png");
+    background-image: url("~assets/chaotic-cakers.gif");
+  }
+  .syrup-storm .main-picture-background {
+    background-image: url("~assets/syrup-storm-bg.svg");
+  }
+  .fearsome-flippers .main-picture-background {
+    background-image: url("~assets/fearsome-flippers-bg.svg");
+  }
+  .chaotic-cakers .main-picture-background {
+    background-image: url("~assets/chaotic-cakers-bg.svg");
   }
 </style>
