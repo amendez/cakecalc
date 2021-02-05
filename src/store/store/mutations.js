@@ -20,3 +20,7 @@ export function registerCakeContractInstance (state, payload) {
 export function registerSwapContractInstance (state, payload) {
     state.swapContractInstance = () => payload
 }
+
+export function registerPancakeProfileContractInstance (state, payload) {
+    state.pancakeProfileContractInstance = () => payload
+}

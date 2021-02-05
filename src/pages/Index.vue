@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page :class="['flex','flex-center',mainTeamClass]">
     <q-dialog v-model="customAmountDialog" seamless position="top">
       <q-card style="width: 60%">
         <q-card-section class="row items-center no-wrap justify-around">
@@ -57,10 +57,10 @@
     </div>
     
     <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog && isWalletBrowser" >
-      <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
-        <q-card>
-          <div v-if="connected && isBSC" class="swapsies"></div>
-          <q-card-section class="text-white" :class="{'bg-secondary':!connected, 'bg-green':connected}">
+      <div class="col-12 col-md " :class="{'col-md':connected, 'col-md':!connected}">
+        <q-card class="main-picture-background">
+          <div v-if="connected && isBSC" class="main-picture"></div>
+          <q-card-section class="text-white light-message" :class="{'bg-secondary':!connected, 'bg-green':connected}">
             <div class="text-h6">{{ !connected ? $t("connect_your_wallet"): $t("wallet_connected") }}</div>
             <div class="text-subtitle2" v-if="!connected">
               {{ $t('please_connect') }}
@@ -68,16 +68,16 @@
           </q-card-section>
 
           <q-card-actions align="around">
-            <q-btn v-if="!connected" @click="connectWallet" color="primary" push icon="power">
+            <q-btn v-if="!connected" @click="connectWallet" color="blue" push icon="power">
               {{ $t('connect_wallet') }}
             </q-btn>
-            <q-btn v-if="connected" @click="refreshAll" color="primary" push icon="refresh">
+            <q-btn v-if="connected" @click="refreshAll" color="blue" push icon="refresh">
               <span v-if="$q.platform.is.desktop">{{ $t('refresh') }}</span>
             </q-btn>
-            <q-btn v-if="connected" @click="customAmountDialog = true" color="primary" push icon="edit">
+            <q-btn v-if="connected" @click="customAmountDialog = true" color="blue" push icon="edit">
               {{ $t('change_amount') }}
             </q-btn>
-            <q-btn v-if="connected" to="/prices" color="primary" push icon="monetization_on">
+            <q-btn v-if="connected" to="/prices" color="blue" push icon="monetization_on">
               {{ $t('prices') }}
             </q-btn>
           </q-card-actions>
@@ -100,12 +100,21 @@
             <q-markup-table>
               <tbody>
                 <tr>
-                  <td class="text-left">{{ $t('address') }}</td>
+                  <td class="text-left">{{ $t('address') }} (BNB: {{ fromWei(web3.balance) | round }})</td>
                   <td class="text-right">{{ userAddress.substring(0,8) }}.....{{ userAddress.substring(34) }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left">{{ $t('bnb_balance') }}</td>
-                  <td class="text-right">{{ fromWei(web3.balance) | round }}</td>
+                  <td class="text-left">{{ $t('gas_unit_price') }}</td>
+                  <td class="text-right">
+                    <q-input
+                      outlined
+                      dense
+                      debounce="2000"
+                      :value="gasUnitPrice"
+                      @input="val => { gasUnitPrice = val }"
+                      style="max-width: 50px;float: right;"
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <td class="text-left">{{ $t('cake_balance') }}</td>
@@ -261,7 +270,6 @@ const { bnb, cake } = tokens
 
 const BNObject = Web3.utils.BN;
 const POOL_INDEX = 0
-const GAS_COST = 20
 const BN = (x) => new BNObject(x)
 
 export default {
@@ -282,6 +290,8 @@ export default {
       oneYearEarnings: [],
       customAmountDialog: false,
       errorMessage: "",
+      teamId: 0,
+      gasUnitPrice: 15,
     }
   },
   computed: {
@@ -290,7 +300,17 @@ export default {
       'poolContract': 'getPoolContract',
       'cakeContract': 'getCakeContract',
       'swapContract': 'getSwapContract',
+      'pancakeProfileContract': 'getPancakeProfileContract',
     }),
+    mainTeamClass(){
+      const map = {
+        '0': "swapsies",
+        '1': "syrup-storm",
+        '2': "fearsome-flippers",
+        '3': "chaotic-cakers",
+      }
+      return map[this.teamId]
+    },
     CAKE(){
       return "🥞"
     },
@@ -340,6 +360,11 @@ export default {
       this.calculatedData = []
       await this.doCalcs()
     },
+    gasUnitPrice: async function () {
+      this.calculatedData = []
+      await this.estimateGas()
+      await this.doCalcs()
+    },
   },
   async mounted () {
     const connected = this.$q.localStorage.getItem('account-connected')
@@ -368,10 +393,17 @@ export default {
         this.connected = this.web3.isInjected
         this.isBSC = this.web3.networkId == 56
         this.getUserInfo()
+        this.getProfile()
       }
       catch (error) {
         this.errorMessage = error
         setTimeout(this.connectWallet, 2000)
+      }
+    },
+    async getProfile() {
+      const objectResult = await this.pancakeProfileContract().methods.getUserProfile(this.userAddress).call({ from: this.userAddress })
+      if (objectResult && objectResult[2]) {
+        this.teamId = objectResult[2]
       }
     },
     async getPoolInfo() {
@@ -401,7 +433,7 @@ export default {
         gas = defaultGas
       }
       
-      this.estimatedGasInBNB = this.toWei(gas * GAS_COST * 0.000000001)
+      this.estimatedGasInBNB = this.toWei(gas * this.gasUnitPrice * 0.000000001)
     },
     async getConversionRate() {
       const rate = await this.swapContract().methods.getAmountsIn(this.toWei(1), [cake.address, bnb.address]).call({ from: this.userAddress })
@@ -568,11 +600,39 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
   .row.alone {
     width: inherit;
   }
-  .swapsies {
-    height:140px;
+  .light-message {
+    opacity: 0.9;
+  }
+  .main-picture {
+    height: 140px;
+    background-size: contain;
+    background-position-x: center;
+    background-position-y: center;
+    background-repeat: no-repeat;
+  }
+  .main-picture-background { 
+    background-size: cover;
+  }
+  .swapsies .main-picture {
     background-image: url("~assets/swapsies.png");
     background-size: cover;
-    background-position-x: center;
-    background-position-y: top;
+  }
+  .syrup-storm .main-picture {
+    background-image: url("~assets/syrup-storm.gif");
+  }
+  .fearsome-flippers .main-picture {
+    background-image: url("~assets/fearsome-flippers.gif");
+  }
+  .chaotic-cakers .main-picture {
+    background-image: url("~assets/chaotic-cakers.gif");
+  }
+  .syrup-storm .main-picture-background {
+    background-image: url("~assets/syrup-storm-bg.svg");
+  }
+  .fearsome-flippers .main-picture-background {
+    background-image: url("~assets/fearsome-flippers-bg.svg");
+  }
+  .chaotic-cakers .main-picture-background {
+    background-image: url("~assets/chaotic-cakers-bg.svg");
   }
 </style>

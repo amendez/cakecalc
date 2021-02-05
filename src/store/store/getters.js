@@ -13,3 +13,7 @@ export function getCakeContract(state) {
 export function getSwapContract(state) {
     return state.swapContractInstance
 }
+
+export function getPancakeProfileContract(state) {
+    return state.pancakeProfileContractInstance
+}

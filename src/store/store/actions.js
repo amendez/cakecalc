@@ -16,4 +16,5 @@ export function getContractInstance ({commit, state}) {
     commit('registerPoolContractInstance', contracts.getPoolContract(web3))
     commit('registerCakeContractInstance', contracts.getCakeContract(web3))
     commit('registerSwapContractInstance', contracts.getSwapContract(web3))
+    commit('registerPancakeProfileContractInstance', contracts.getPancakeProfileContract(web3))
 }

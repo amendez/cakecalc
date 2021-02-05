@@ -62,4 +62,5 @@ export default {
   no_wallet_error_title: "You'll need to connect a wallet",
   no_wallet_error_message_1: "Please, use your wallet to access this calculator, we read PancakeSwap's contracts directly, no intermediaries.",
   no_wallet_error_message_2: "You can get a good wallet here:",
+  gas_unit_price: "Gas unit price (GWEIs)"
 }

@@ -11,5 +11,6 @@ export default function () {
     contractInstance: null,
     cakeContractInstance: null,
     swapContractInstance: null,
+    pancakeProfileContractInstance: null,
   }
 }
