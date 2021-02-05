@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page :class="['flex','flex-center',mainTeamClass]">
     <q-dialog v-model="customAmountDialog" seamless position="top">
       <q-card style="width: 60%">
         <q-card-section class="row items-center no-wrap justify-around">
@@ -58,9 +58,9 @@
     
     <div class="row q-gutter-sm" :class="{'alone':!connected}" v-if="!customAmountDialog && isWalletBrowser" >
       <div class="col-12 col-md" :class="{'col-md':connected, 'col-md':!connected}" >
-        <q-card>
-          <div v-if="connected && isBSC" class="swapsies"></div>
-          <q-card-section class="text-white" :class="{'bg-secondary':!connected, 'bg-green':connected}">
+        <q-card class="main-picture">
+          <div v-if="connected && isBSC" style="height: 140px"></div>
+          <q-card-section class="text-white light-message" :class="{'bg-secondary':!connected, 'bg-green':connected}">
             <div class="text-h6">{{ !connected ? $t("connect_your_wallet"): $t("wallet_connected") }}</div>
             <div class="text-subtitle2" v-if="!connected">
               {{ $t('please_connect') }}
@@ -68,16 +68,16 @@
           </q-card-section>
 
           <q-card-actions align="around">
-            <q-btn v-if="!connected" @click="connectWallet" color="primary" push icon="power">
+            <q-btn v-if="!connected" @click="connectWallet" color="blue" push icon="power">
               {{ $t('connect_wallet') }}
             </q-btn>
-            <q-btn v-if="connected" @click="refreshAll" color="primary" push icon="refresh">
+            <q-btn v-if="connected" @click="refreshAll" color="blue" push icon="refresh">
               <span v-if="$q.platform.is.desktop">{{ $t('refresh') }}</span>
             </q-btn>
-            <q-btn v-if="connected" @click="customAmountDialog = true" color="primary" push icon="edit">
+            <q-btn v-if="connected" @click="customAmountDialog = true" color="blue" push icon="edit">
               {{ $t('change_amount') }}
             </q-btn>
-            <q-btn v-if="connected" to="/prices" color="primary" push icon="monetization_on">
+            <q-btn v-if="connected" to="/prices" color="blue" push icon="monetization_on">
               {{ $t('prices') }}
             </q-btn>
           </q-card-actions>
@@ -282,6 +282,7 @@ export default {
       oneYearEarnings: [],
       customAmountDialog: false,
       errorMessage: "",
+      teamId: 0,
     }
   },
   computed: {
@@ -290,7 +291,17 @@ export default {
       'poolContract': 'getPoolContract',
       'cakeContract': 'getCakeContract',
       'swapContract': 'getSwapContract',
+      'pancakeProfileContract': 'getPancakeProfileContract',
     }),
+    mainTeamClass(){
+      const map = {
+        '0': "swapsies",
+        '1': "syrup-storm",
+        '2': "fearsome-flippers",
+        '3': "chaotic-cakers",
+      }
+      return map[this.teamId]
+    },
     CAKE(){
       return "🥞"
     },
@@ -368,10 +379,17 @@ export default {
         this.connected = this.web3.isInjected
         this.isBSC = this.web3.networkId == 56
         this.getUserInfo()
+        this.getProfile()
       }
       catch (error) {
         this.errorMessage = error
         setTimeout(this.connectWallet, 2000)
+      }
+    },
+    async getProfile() {
+      const objectResult = await this.pancakeProfileContract().methods.getUserProfile(this.userAddress).call({ from: this.userAddress })
+      if (objectResult && objectResult[2]) {
+        this.teamId = 1 //objectResult[2]
       }
     },
     async getPoolInfo() {
@@ -568,11 +586,24 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
   .row.alone {
     width: inherit;
   }
-  .swapsies {
-    height:140px;
-    background-image: url("~assets/swapsies.png");
-    background-size: cover;
+  .light-message {
+    opacity: 0.9;
+  }
+  .main-picture {
+    background-size: auto;
     background-position-x: center;
-    background-position-y: top;
+    background-position-y: center;
+  }
+  .swapsies .main-picture {
+    background-image: url("~assets/swapsies.png");
+  }
+  .syrup-storm .main-picture {
+    background-image: url("~assets/syrup-storm-lg.png");
+  }
+  .fearsome-flippers .main-picture {
+    background-image: url("~assets/fearsome-flippers-lg.png");
+  }
+  .chaotic-cakers .main-picture {
+    background-image: url("~assets/chaotic-cakers-lg.png");
   }
 </style>
