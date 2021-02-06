@@ -1,14 +1,16 @@
 import getWeb3 from '../../utils/getWeb3'
 import contracts from '../../utils/getContract'
 
-export function registerWeb3 ({commit}) {
-    console.debug('registerWeb3 Action being executed')
-    return getWeb3().then(result => {
-        console.debug('committing result to registerWeb3Instance mutation')
-        return commit('registerWeb3Instance', result)
-    }).catch(e => {
-        console.debug('error in action registerWeb3', e)
-    })
+export async function registerWeb3 ({commit}) {
+    try {
+        const result = await getWeb3()
+        if (result && result.injectedWeb3){
+            return commit('registerWeb3Instance', result)
+        }
+    }
+    catch (e){
+        console.error('Error in action registerWeb3', e)
+    }
 }
 
 export function getContractInstance ({commit, state}) {

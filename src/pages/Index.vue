@@ -271,6 +271,7 @@ const { bnb, cake } = tokens
 const BNObject = Web3.utils.BN;
 const POOL_INDEX = 0
 const BN = (x) => new BNObject(x)
+const logDebugInfo = false
 
 export default {
   name: 'cakeculator',
@@ -386,6 +387,8 @@ export default {
       return number?web3.utils.toWei(strNumber):0
     },
     async connectWallet() {
+      if (!this.isWalletBrowser) return
+
       this.startLoading()
       try {
         await this.$store.dispatch('store/registerWeb3')
@@ -397,14 +400,17 @@ export default {
       }
       catch (error) {
         this.errorMessage = error
-        setTimeout(this.connectWallet, 2000)
+        setTimeout(this.connectWallet, 5000)
       }
     },
     async getProfile() {
-      const objectResult = await this.pancakeProfileContract().methods.getUserProfile(this.userAddress).call({ from: this.userAddress })
-      if (objectResult && objectResult[2]) {
-        this.teamId = objectResult[2]
+      try {
+        const objectResult = await this.pancakeProfileContract().methods.getUserProfile(this.userAddress).call({ from: this.userAddress })
+        if (objectResult && objectResult[2]) {
+          this.teamId = objectResult[2]
+        }
       }
+      catch (e){}
     },
     async getPoolInfo() {
       const objectResult = await this.poolContract().methods.poolInfo(POOL_INDEX).call({ from: this.userAddress })
@@ -489,18 +495,20 @@ export default {
       
       const cakesByPeriod = investedAmount * (periodInterestRate - 1)
       
-      try {
-        console.debug('==================================================================')
-        console.debug('periodLengthInHours: ' + hours)
-        console.debug('periodInterestRate: ' + periodInterestRate)
-        console.debug('periodCount: ' + periodCount)
-        console.debug('investedAmount: ' + this.fromWei(investedAmount) + ' CAKES')
-        console.debug('networkFee: ' + this.fromWei(networkFee) + ' CAKES')
-        console.debug("composedInterestRate: " + composedInterestRate)
-        console.debug("totalFeeCost: " + this.fromWei(totalFeeCost) + ' CAKES')
-        console.debug("EARNED CAKES AFTER 1 MONTH: " + this.fromWei(result) + ' CAKES')
+      if (logDebugInfo) {
+        try {
+          console.debug('==================================================================')
+          console.debug('periodLengthInHours: ' + hours)
+          console.debug('periodInterestRate: ' + periodInterestRate)
+          console.debug('periodCount: ' + periodCount)
+          console.debug('investedAmount: ' + this.fromWei(investedAmount) + ' CAKES')
+          console.debug('networkFee: ' + this.fromWei(networkFee) + ' CAKES')
+          console.debug("composedInterestRate: " + composedInterestRate)
+          console.debug("totalFeeCost: " + this.fromWei(totalFeeCost) + ' CAKES')
+          console.debug("EARNED CAKES AFTER 1 MONTH: " + this.fromWei(result) + ' CAKES')
+        }
+        catch (e){}
       }
-      catch (e){}
       
       if (result < 0) {
         return 0
