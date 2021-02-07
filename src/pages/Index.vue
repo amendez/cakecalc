@@ -27,8 +27,37 @@
             class="q-ml-sm"
           />
           <q-space />
-          <q-btn flat round icon="close" v-close-popup @click="customAmount = 0" />
         </q-card-section>
+        <q-card-section class="row items-center no-wrap justify-around">
+          <q-input
+            outlined
+            dense
+            debounce="1000"
+            :value="apyToCalc"
+            @input="val => { customApyAmount = val }"
+            style="max-width: 120px"
+          >
+            <template v-slot:prepend>
+              <span class="text-subtitle2">APR</span>
+            </template>
+            <template v-slot:append>
+              <span class="text-subtitle2">%</span>
+            </template>
+          </q-input>
+          <q-slider
+            :value="Math.round(apyToCalc)"
+            @change="val => { customApyAmount = val }"
+            :min="1"
+            :max="5000"
+            :step="10"
+            color="primary"
+            label-always
+            label
+            class="q-ml-sm"
+          />
+          <q-space />
+        </q-card-section>
+        <q-btn class="float-right" flat label="close" icon-right="close" @click="closeCustomAmountDialog" />
       </q-card>
     </q-dialog>
 
@@ -147,7 +176,16 @@
               <tbody>
                 <tr>
                   <td class="text-left">{{ $t('apy') }}</td>
-                  <td class="text-right">{{ apy | round(4)}}%</td>
+                  <td class="text-right">
+                    {{ apy | round(4)}}%
+                    <q-btn
+                      color="primary"
+                      icon="edit"
+                      size="sm"
+                      push round
+                      @click="customAmountDialog = true"
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <td class="text-left">{{ $t('bnb_cake_rate') }}</td>
@@ -171,6 +209,7 @@
     <div class="row" v-if="connected && isBSC && calculatedData.length">
       <div class="col-12">
         <br>
+        <div v-if="customAmountDialog" class="top-space"></div>
         <q-card>
           <q-card-section class="bg-primary text-white">
             <div class="text-h6">{{ $t('summary') }} {{ fromWei(amountToCalc) | round }} {{ CAKE }}!</div>
@@ -287,6 +326,7 @@ export default {
       BNB_CAKERate: 0,
       pendingHarvest: 0,
       apy: 0,
+      customApyAmount: 0,
       calculatedData: [],
       oneYearEarnings: [],
       customAmountDialog: false,
@@ -336,6 +376,9 @@ export default {
     amountToCalc(){
       return this.customAmount ? this.toWei(this.customAmount) : this.amountInPool
     },
+    apyToCalc(){
+      return this.customApyAmount ? this.customApyAmount : this.apy
+    },
     estimatedGasInCAKE() {
       return this.toWei(this.fromWei(this.estimatedGasInBNB) * this.fromWei(this.BNB_CAKERate))
     },
@@ -360,6 +403,12 @@ export default {
     amountToCalc: async function () {
       this.calculatedData = []
       await this.doCalcs()
+    },
+    apyToCalc: async function () {
+      if (this.customAmountDialog) {
+        this.calculatedData = []
+        await this.doCalcs()
+      }
     },
     gasUnitPrice: async function () {
       this.calculatedData = []
@@ -483,7 +532,7 @@ export default {
       }
       await Promise.all(promises)
 
-      const periodInterestRate = ((this.apy / 365 / 24) * hours) / 100 + 1
+      const periodInterestRate = ((this.apyToCalc / 365 / 24) * hours) / 100 + 1
       const periodCount = (720 * months) / hours
       const investedAmount = this.amountToCalc
       const networkFee = this.estimatedGasInCAKE
@@ -559,6 +608,7 @@ export default {
       this.BNB_CAKERate = 0
       this.pendingHarvest = 0
       this.apy = 0
+      this.customApyAmount = 0
       this.calculatedData = []
       this.customAmount = 0
       await this.getUserInfo()
@@ -571,6 +621,18 @@ export default {
     },
     stopLoading() {
       this.$q.loading.hide()
+    },
+    async closeCustomAmountDialog() {
+      this.customAmountDialog = false
+      if (this.customAmount == 0 && this.customApyAmount != 0) {
+        this.customApyAmount = 0
+        this.calculatedData = []
+        await this.doCalcs()
+      }
+      else {
+        this.customAmount = 0
+        this.customApyAmount = 0
+      }
     },
   }
 }
@@ -610,6 +672,9 @@ function toPlainString(num) { // BN.js Throws from 1e+21 and above so using this
   }
   .light-message {
     opacity: 0.9;
+  }
+  .top-space {
+    margin-top: 120px
   }
   .main-picture {
     height: 140px;
