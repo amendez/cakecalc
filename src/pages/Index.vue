@@ -332,7 +332,7 @@ export default {
       customAmountDialog: false,
       errorMessage: "",
       teamId: 0,
-      gasUnitPrice: 15,
+      gasUnitPrice: 10,
     }
   },
   computed: {
