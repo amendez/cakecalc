@@ -113,7 +113,7 @@ export default {
         title: this.$t('spreadsheet_calculator_link'),
         caption: this.$t('spreadsheet_calculator_caption'),
         icon: 'calculate',
-        link: 'https://linktr.ee/pancakeswap'
+        link: 'https://linktr.ee/leo.pancakeswap'
       },
     ]
   },
