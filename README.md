@@ -21,6 +21,7 @@ If any of the previous statements is not being respected, you could be using a s
 * Brave with Metamask extension (Desktop)
 * Firefox with Metamask extension (Desktop)
 * Metamask integrated browser (iOS)
+* Metamask integrated browser (Android)
 * SafePal integrated browser (iOS)
 * TrustWallet integrated browser (Android)
 
@@ -73,6 +74,7 @@ Si algo de lo mencionado anteriormente no se cumple, podrías estas usando un sc
 * Brave con la extensión Metamask (Escritorio)
 * Firefox con la extensión Metamask (Escritorio)
 * Navegador integrado de Metamask (iOS)
+* Navegador integrado de Metamask (Android)
 * Navegador integrado de SafePal (iOS)
 * Navegador integrado de TrustWallet (Android)
 
