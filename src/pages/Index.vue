@@ -538,7 +538,7 @@ export default {
       const networkFee = this.estimatedGasInCAKE
       
       const composedInterestRate = periodInterestRate ** periodCount
-      const totalFeeCost = networkFee * periodCount
+      const totalFeeCost = Math.round(networkFee * periodCount)
       
       const result = (investedAmount * composedInterestRate - totalFeeCost - investedAmount)
       
